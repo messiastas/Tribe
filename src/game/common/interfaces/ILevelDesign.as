@@ -9,7 +9,7 @@ package game.common.interfaces
 	{
 		function getMapArray():Array;
 		function moveMap(speed:int):void;
-		function addToObjects(type:String):void 
+		function addToObjects(type:String,oX:int=0,oY:int=0):void 
 	}
 	
 }

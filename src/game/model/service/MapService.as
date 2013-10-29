@@ -5,7 +5,7 @@ package game.model.service
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	import game.common.SharedConst;
-	import game.common.interfaces.ILevelDesign;
+	import game.common.interfaces.*;
 	import game.common.GameFacade;
 	
 	/**
@@ -34,9 +34,9 @@ package game.model.service
 					break;
 					
 			}
-			GameFacade.getInstance().mainStage.addChild(currentMapGraphic);
-			GameFacade.getInstance().mainStage.addChild(currentMapGraphic2);
-			GameFacade.getInstance().mainStage.addChild(objectsGraphic);
+			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getMapClip().addChild(currentMapGraphic);
+			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getMapClip().addChild(currentMapGraphic2);
+			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getMapClip().addChild(objectsGraphic);
 			currentMapGraphic2.y = currentMapGraphic2.height;
 			mapStep = SharedConst.MAP_STEP;
 			//createMap();
@@ -64,7 +64,7 @@ package game.model.service
 				objectsGraphic.y = 0;
 		}
 		
-		public function addToObjects(type:String):void 
+		public function addToObjects(type:String,oX:int=0,oY:int=0):void 
 		{
 			var needToAdd:Boolean = true;
 			switch (type)
@@ -82,11 +82,29 @@ package game.model.service
 				default:
 					needToAdd = false;
 					break;
+				case "normalCorpse":
+					newObject = new Human;
+					newObject.gotoAndStop(2);
+					
+					break;
+				case "bloodyCorpse":
+					newObject = new Human;
+					newObject.gotoAndStop(3);
+					
+					break;
 			}
 			if (needToAdd)
 			{
 				objectsGraphic.addChild(newObject);
-				newObject.y = -objectsGraphic.y + SharedConst.STAGE_HEIGHT;
+				if ((oX + oY) == 0)
+				{
+					newObject.y = -objectsGraphic.y + SharedConst.STAGE_HEIGHT;
+				} else
+				{
+					newObject.y = -objectsGraphic.y + oY;
+					newObject.x = oX;
+				}
+				
 				objectsArray.push({obj:newObject,coordY:newObject.y})
 			}
 			

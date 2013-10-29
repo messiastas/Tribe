@@ -10,7 +10,7 @@ package game.view.components
 	import flash.events.EventDispatcher;
 	import flash.utils.Timer;
 	import game.common.GameFacade
-	import game.common.interfaces.IHuman;
+	import game.common.interfaces.*;
 	import game.common.SharedConst;
 	
 	/**
@@ -32,7 +32,7 @@ package game.view.components
 		
 		public function init():void {
 			
-			GameFacade.getInstance().mainStage.addChild(human);
+			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().addChild(human);
 			//var body:Rectangle = new Rectangle(0, 0, 20, 20);
 			body = new Human();
 			body.head.gotoAndPlay(int(Math.random() * (body.totalFrames - 1)) + 1)
@@ -56,11 +56,11 @@ package game.view.components
 			{
 				case "shaman":
 					body.crown.visible = true;
-					GameFacade.getInstance().mainStage.addChild(human);
+					(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().addChild(human);
 					body.scaleX = body.scaleY = 1.5;
 					break;
 				case "dead":
-					GameFacade.getInstance().mainStage.removeChild(human);
+					(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().removeChild(human);
 					break;
 			}
 		}

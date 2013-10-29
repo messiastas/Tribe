@@ -1,5 +1,6 @@
 package game.common.interfaces 
 {
+	import flash.display.MovieClip;
 	
 	/**
 	 * ...
@@ -12,6 +13,10 @@ package game.common.interfaces
 		function createNewShaman():void;
 		function getGroupSize():int;
 		function getGroupPoints():Array;
+		function getMapClip():MovieClip;
+		function getCreaturesClip():MovieClip;
+		function getInterfaceClip():MovieClip;
+		function killGroup(what:int):void;
 	}
 	
 }

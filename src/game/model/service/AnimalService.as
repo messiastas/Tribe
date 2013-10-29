@@ -46,11 +46,37 @@ package game.model.service
 				{
 					case "antelope":
 						
-						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 20)
+						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 10)
 						{
 							trace("ANTELOPE SCARED");
 							needToStop = false;
-							currentAngle = 270;
+							if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
+							{
+								
+								currentAngle = 270;
+							}	else
+							{
+								sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"AntelopeGoright"})
+								currentAngle = 90;
+							}
+						}
+						break;
+					case "crocodyle":
+						
+						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 25)
+						{
+							trace("Crocodyle SCARED");
+							needToStop = false;
+							if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
+							{
+								
+								currentAngle = 270;
+								sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"CrocodyleGoleft"})
+							}	else
+							{
+								sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"CrocodyleGoright"})
+								currentAngle = 90;
+							}
 						}
 						break;
 					default:
@@ -66,10 +92,22 @@ package game.model.service
 						var points:Array = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupPoints();
 						for each(var point:int in points)
 						{
-							if (Math.abs(point - currentPoint.x) < 50)
+							if (Math.abs(point - currentPoint.x) <= 40)
 							{
-								SharedConst.SUPPLIES += 20;
+								SharedConst.SUPPLIES += 10;
 								sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
+								break;
+							}
+						}
+						break;
+					case "crocodyle":
+						
+						points = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupPoints();
+						for each(point in points)
+						{
+							if (Math.abs(point - currentPoint.x) <= 50 && (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() <= 25)
+							{
+								(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(point);
 							}
 						}
 						break;

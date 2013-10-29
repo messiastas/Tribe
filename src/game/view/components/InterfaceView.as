@@ -11,7 +11,7 @@ package game.view.components
 	import flash.events.EventDispatcher;
 	import flash.utils.Timer;
 	import game.common.GameFacade
-	import game.common.interfaces.IHuman;
+	import game.common.interfaces.*;
 	import game.common.SharedConst;
 	
 	/**
@@ -34,7 +34,7 @@ package game.view.components
 		
 		public function init():void {
 			
-			GameFacade.getInstance().mainStage.addChild(movie);
+			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getInterfaceClip().addChild(movie);
 			//var body:Rectangle = new Rectangle(0, 0, 20, 20);
 			body = new interfaceView();
 			movie.addChild(body);

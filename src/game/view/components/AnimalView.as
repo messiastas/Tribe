@@ -10,7 +10,7 @@ package game.view.components
 	import flash.events.EventDispatcher;
 	import flash.utils.Timer;
 	import game.common.GameFacade
-	import game.common.interfaces.IHuman;
+	import game.common.interfaces.*;
 	import game.common.SharedConst;
 	
 	/**
@@ -32,12 +32,15 @@ package game.view.components
 		
 		public function init():void {
 			
-			GameFacade.getInstance().mainStage.addChild(human);
+			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().addChild(human);
 			//var body:Rectangle = new Rectangle(0, 0, 20, 20);
 			switch (humanName)
 			{
 				case "antelope":
 					body = new Antelope();
+					break;
+				case "crocodyle":
+					body = new Crocodyle();
 					break;
 				default:
 					body = new Antelope();
@@ -63,6 +66,15 @@ package game.view.components
 			{
 				case "eated":
 					body.gotoAndStop(2);
+				break;
+				case "CrocodyleGoleft":
+					body.rotation = -90;
+				break;
+				case "CrocodyleGoright":
+					body.rotation = 90;
+				break;
+				case "AntelopeGoright":
+					body.scaleX = -1;
 				break;
 			}
 		}

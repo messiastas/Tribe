@@ -29,17 +29,19 @@ package game.common
 		public static const LEVELTYPE_SCROLLER:String = "LEVELTYPE_SCROLLER";
 		
 		public static const CURRENT_LEVEL:int = 1;
-		public static const MAP_SPEED:int = 3;
+		public static var MAP_SPEED:int = 3;
 		public static var SPEND_DISTANCE:int = 0;
 		public static var SHAMAN_LEVEL:int = 1;
 		public static var SUPPLIES:Number = 20;
 		public static const SUPPLIES_EAT:Number = 0.02;
 		public static const STAGE_HEIGHT:int = 600;
+		public static const STAGE_WIDTH:int = 800;
 		public static const TRIBE_VERTICAL_POSITION:int = 75;
 		public static const TRIBE_SIZE:int = 50;
 		public static const ACTION_TIME:int = 30;
 		public static const HELP_TIME:int = 60;
 		public static const MAP_STEP:int = 20;
+		public static var CURRENT_DISPERSION:Number = 50;
 		
 		public static const LEVELS_ARRAY:Array = [
 													[	
@@ -47,7 +49,11 @@ package game.common
 														{ distance:300, objects:["show_help_right"] }, 
 														{ distance:350, objects:["animal"],type:"antelope",position:200},
 														{ distance:500, objects:["river", "bridge1"], safeZones:[[300, 500]], long:200 },
-														{ distance:800, objects:["show_help_left"]}
+														{ distance:800, objects:["show_help_left"] },
+														{ distance:810, objects:["animal"], type:"antelope", position:750 },
+														{ distance:1200, objects:["animal"], type:"crocodyle", position:350 },
+														{ distance:1250, objects:["animal"], type:"crocodyle", position:600 },
+														{ distance:1600, objects:["animal"],type:"antelope",position:320},
 													],
 													
 													]

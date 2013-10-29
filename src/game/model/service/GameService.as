@@ -6,6 +6,7 @@ package game.model.service
 	 */
 	
 	 
+	 import flash.display.MovieClip;
 	 import flash.events.Event;
 	 import flash.events.KeyboardEvent;
 	 import flash.events.MouseEvent;
@@ -29,6 +30,9 @@ package game.model.service
 	public class GameService extends Proxy implements IProxy,IGameService
 	{
 		
+		private var mcCreatures:MovieClip = new MovieClip;
+		private var mcMap:MovieClip= new MovieClip;
+		private var mcInterface:MovieClip= new MovieClip;
 		
 		
 		private var currentStep:int = 0;
@@ -38,6 +42,7 @@ package game.model.service
 		private var keyHeroes:Array = [];
 		public static var iteration:Number = 0;
 		private var currentLevelType:String;
+		
 		
 		private var humans:Array;
 		private var animals:Array = new Array;
@@ -65,6 +70,9 @@ package game.model.service
 		public function init():void {
 			//proxyName = SharedConst.GAME_SERVICE;
 			GameFacade.getInstance().mainStage.focus = GameFacade.getInstance().mainStage;
+			GameFacade.getInstance().mainStage.addChild(mcMap);
+			GameFacade.getInstance().mainStage.addChild(mcCreatures);
+			GameFacade.getInstance().mainStage.addChild(mcInterface);
 			actionTimer.addEventListener(TimerEvent.TIMER, onActionTimer);
 			createMap();
 			startIntro();
@@ -82,6 +90,7 @@ package game.model.service
 			introClip = new IntroClip;
 			GameFacade.getInstance().mainStage.addChild(introClip);
 			GameFacade.getInstance().mainStage.addEventListener(MouseEvent.CLICK, onIntroSkip);
+			GameFacade.getInstance().mainStage.addEventListener(MouseEvent.RIGHT_CLICK, nullRightClick);
 			GameFacade.getInstance().mainStage.frameRate = 24;
 		}
 		
@@ -138,7 +147,7 @@ package game.model.service
 				
 			currentLevelArray = SharedConst.LEVELS_ARRAY[SharedConst.CURRENT_LEVEL-1];
 			actionTimer.start();
-			GameFacade.getInstance().mainStage.addEventListener(MouseEvent.RIGHT_CLICK, nullRightClick);
+			
 			//GameFacade.getInstance().mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPush);
 			//GameFacade.getInstance().mainStage.addEventListener(KeyboardEvent.KEY_UP,onKeyUnpressed);
 		}
@@ -169,7 +178,12 @@ package game.model.service
 			{
 				
 				currentGroups--;
+				if (currentGroups > humans.length)
+				{
+					currentGroups = humans.length;
+				}
 				createGroups(currentGroups);
+				
 			}
 				
 		}
@@ -199,12 +213,14 @@ package game.model.service
 			//GameFacade.getInstance().iteration = iteration;
 			//sendNotification(SharedConst.NEW_ITER, { "iteration":iteration } );
 			var i:int = 0;
-			while (i < humans.length)
+			if (isPlayerMove)
 			{
-					getHuman(humans[i]).makeStep();
-					i++
+				while (i < humans.length)
+				{
+						getHuman(humans[i]).makeStep();
+						i++
+				}
 			}
-			
 			switch (currentLevelType)
 			{
 				case SharedConst.LEVELTYPE_SCROLLER:
@@ -227,7 +243,7 @@ package game.model.service
 				if (SharedConst.SUPPLIES < 1 && humans.length>0)
 				{
 					SharedConst.SUPPLIES = 0;
-					checkTribe(makeDead(getHuman(humans[0]),0))
+					checkTribe(makeDead(humans[0],0,"normalCorpse"))
 				}
 				sendNotification(SharedConst.CHANGE_SUPPLIES, { num:int(SharedConst.SUPPLIES) } );
 			}
@@ -249,6 +265,11 @@ package game.model.service
 			{
 				createObject(currentLevelArray[0])
 				currentLevelArray.shift();
+			} else if (currentLevelArray.length == 0)
+			{
+				createRandomObstacle();
+				
+				
 			}
 			
 			if (obstacles.length>0 && obstacles[0].distance <= SharedConst.SPEND_DISTANCE)
@@ -270,7 +291,7 @@ package game.model.service
 					}
 					if (!isAlive)
 					{
-						needShaman = makeDead(human,hNum);
+						needShaman = makeDead(h,hNum,"normalCorpse");
 						hNum--;
 					}
 				}
@@ -285,12 +306,53 @@ package game.model.service
 			}
 		}
 		
-		private function makeDead(human:IHuman,hNum:int):Boolean 
+		private function createRandomObstacle():void 
 		{
+			var types:Array = ["river", "animal"];
+				var bridges:Array = [1, 2];
+				var animals:Array = ["antelope", "crocodyle"];
+				
+				var distance:int = 50 + Math.random()*500+SharedConst.SPEND_DISTANCE;
+				var objects:Array;
+				var type:String = "";
+				var safeZones:Array = [];
+				var position:int = 0;
+				var long:int = 200;
+				if (Math.random() > .3)//animal
+				{
+					objects = ["animal"]
+					position = 50 + Math.random() * (SharedConst.STAGE_WIDTH - 50);
+					if (Math.random() > .4)//antelope
+					{
+						type = "antelope"
+					} else //crocodyle
+					{
+						type = "crocodyle"
+					}
+				} else //river
+				{
+					long = 200
+					if (Math.random() > 0.5)//1
+					{
+						objects = ["river", "bridge1"];
+						safeZones = [[300, 500]]
+					} else //2
+					{
+						objects = ["river", "bridge2"];
+						safeZones = [[210, 320], [490, 590]]
+					}
+				}
+				currentLevelArray.push({"distance":distance,"objects":objects,"type":type,"safeZones":safeZones,"position":position,"long":long})
+		}
+		
+		private function makeDead(humanName:String,hNum:int,death:String=""):Boolean 
+		{
+			var human:IHuman = getHuman(humanName);
 			var needShaman:Boolean = false;
 			if (	human.makeDead() == "shaman")
 				needShaman = true;
 			humans.splice(hNum, 1);
+			(GameFacade.getInstance().retrieveProxy(SharedConst.MAP_SERVICE) as ILevelDesign).addToObjects(death,human.getCurrentPoint().x,human.getCurrentPoint().y)
 			//hNum--;
 			//trace(h, "is dead");
 			return needShaman;
@@ -397,7 +459,8 @@ package game.model.service
 		private function createPoints(startPoint:int, endPoint:int, num:int):void
 		{
 			var step:int = int((endPoint - startPoint) / (num + 1));
-			currentDispersion = int(step/6)
+			currentDispersion = int(step / 6);
+			SharedConst.CURRENT_DISPERSION = currentDispersion;
 			var i:int = 1;
 			while (startPoint + i * step < endPoint-step/2)
 			{
@@ -405,7 +468,21 @@ package game.model.service
 				groupsOnPoint.push(0);
 				i++;
 			}
+			/*if (points.length >= 5) {
+				SharedConst.MAP_SPEED = 2;
+			}else {
+				SharedConst.MAP_SPEED = 3;
+			}*/
 			//trace(points);
+		}
+		
+		public function killGroup(what:int):void 
+		{
+			var num:int = points.indexOf(what);
+			for each(var hName:String in humansGroup[num])
+			{
+				checkTribe(makeDead(hName,humans.indexOf(hName),"bloodyCorpse"))
+			}
 		}
 		
 		public function getGroupSize():int 
@@ -416,6 +493,19 @@ package game.model.service
 		public function getGroupPoints():Array 
 		{
 			return points;
+		}
+		
+		public function getMapClip():MovieClip 
+		{
+			return mcMap;
+		}
+		public function getCreaturesClip():MovieClip 
+		{
+			return mcCreatures;
+		}
+		public function getInterfaceClip():MovieClip 
+		{
+			return mcInterface;
 		}
 		
 		

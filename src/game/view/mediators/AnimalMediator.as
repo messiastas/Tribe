@@ -21,15 +21,15 @@ package game.view.mediators
 		
 		private var interests:Array = new Array
 		
-		public function AnimalMediator(Name:String):void
+		public function AnimalMediator(note:Object):void
 		{
-			humanName = Name;	
+			humanName = note.name;	
 			interests = [
 				SharedConst.ACTION_MOVE_HUMAN + humanName,
 				SharedConst.ACTION_CHANGE_ANGLE + humanName,
 				SharedConst.ACTION_CHANGE_STATE + humanName,
 			];
-			super( NAME + humanName, new AnimalView(humanName) );
+			super( NAME + humanName, new AnimalView(note.type) );
 			trace("MEDIATOR", humanName);
 		}
 		

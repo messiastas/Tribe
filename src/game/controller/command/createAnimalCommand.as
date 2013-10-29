@@ -19,7 +19,7 @@ package game.controller.command
 		override public function execute(notification:INotification):void
 		{
 			
-			GameFacade.getInstance().registerMediator(new AnimalMediator(notification.getBody().name));
+			GameFacade.getInstance().registerMediator(new AnimalMediator(notification.getBody()));
 			GameFacade.getInstance().registerProxy(new AnimalService(notification.getBody()));
 			
 		}
