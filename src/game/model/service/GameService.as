@@ -60,6 +60,7 @@ package game.model.service
 		private var obstacles:Array = new Array;
 		private var introClip:IntroClip;
 		
+		private var lastObjectLong:int = 0;
 		public function GameService(pname:String,data:Object = null ):void 
 		{
 			proxyName = pname;//SharedConst.GAME_SERVICE;
@@ -113,7 +114,8 @@ package game.model.service
 			for (var i:int = 0; i < SharedConst.TRIBE_SIZE;i++)
 			{	
 				var newPoint:Point = new Point(375 + Math.random() * currentDispersion, SharedConst.TRIBE_VERTICAL_POSITION + Math.random() * currentDispersion);
-				sendNotification(SharedConst.CMD_CREATE_HUMAN, {name:"human"+String(i),coord:newPoint});
+				sendNotification(SharedConst.CMD_CREATE_HUMAN, { name:"human" + String(i), coord:newPoint } );
+				SharedConst.LAST_HUMAN_NAME = i;
 				humans.push("human" + String(i))
 				
 			}
@@ -178,10 +180,7 @@ package game.model.service
 			{
 				
 				currentGroups--;
-				if (currentGroups > humans.length)
-				{
-					currentGroups = humans.length;
-				}
+				
 				createGroups(currentGroups);
 				
 			}
@@ -240,12 +239,13 @@ package game.model.service
 			{
 				SharedConst.SUPPLIES -= SharedConst.SUPPLIES_EAT * humans.length
 				
-				if (SharedConst.SUPPLIES < 1 && humans.length>0)
+				if (SharedConst.SUPPLIES <= 0 && humans.length>0)
 				{
 					SharedConst.SUPPLIES = 0;
-					checkTribe(makeDead(humans[0],0,"normalCorpse"))
+					var num:int = int(Math.random()*(humans.length-1))
+					checkTribe(makeDead(humans[num],num,"normalCorpse"))
 				}
-				sendNotification(SharedConst.CHANGE_SUPPLIES, { num:int(SharedConst.SUPPLIES) } );
+				sendNotification(SharedConst.CHANGE_SUPPLIES );
 			}
 		}
 		
@@ -291,10 +291,13 @@ package game.model.service
 					}
 					if (!isAlive)
 					{
-						needShaman = makeDead(h,hNum,"normalCorpse");
+						var nS:Boolean = makeDead(h, hNum, "normalCorpse");
+						if (nS)
+							needShaman = true;
 						hNum--;
 					}
 				}
+				
 				SharedConst.SHAMAN_LEVEL++;
 				checkTribe(needShaman)
 				
@@ -312,7 +315,7 @@ package game.model.service
 				var bridges:Array = [1, 2];
 				var animals:Array = ["antelope", "crocodyle"];
 				
-				var distance:int = 50 + Math.random()*500+SharedConst.SPEND_DISTANCE;
+				var distance:int = lastObjectLong + 50 + Math.random()*500+SharedConst.SPEND_DISTANCE;
 				var objects:Array;
 				var type:String = "";
 				var safeZones:Array = [];
@@ -320,18 +323,23 @@ package game.model.service
 				var long:int = 200;
 				if (Math.random() > .3)//animal
 				{
+					lastObjectLong = 0;
 					objects = ["animal"]
 					position = 50 + Math.random() * (SharedConst.STAGE_WIDTH - 50);
-					if (Math.random() > .4)//antelope
+					if (Math.random() > .6)//antelope
 					{
 						type = "antelope"
+					} else if (Math.random() > .4)//strangers
+					{
+						type = "strangers"
 					} else //crocodyle
 					{
 						type = "crocodyle"
 					}
 				} else //river
 				{
-					long = 200
+					long = 200;
+					
 					if (Math.random() > 0.5)//1
 					{
 						objects = ["river", "bridge1"];
@@ -341,6 +349,7 @@ package game.model.service
 						objects = ["river", "bridge2"];
 						safeZones = [[210, 320], [490, 590]]
 					}
+					lastObjectLong = long;
 				}
 				currentLevelArray.push({"distance":distance,"objects":objects,"type":type,"safeZones":safeZones,"position":position,"long":long})
 		}
@@ -371,7 +380,7 @@ package game.model.service
 				{
 					
 				}
-				
+				//createGroups(currentGroups);
 			} else 
 			{
 				actionTimer.stop();
@@ -425,12 +434,17 @@ package game.model.service
 		
 		private function createGroups(num:int):void 
 		{
+			if (num > humans.length)
+				{
+					num = humans.length;
+					currentGroups = num;
+				}
 			var i:int = 0;
 			var j:int = 0;
 			points = new Array;
 			groupsOnPoint = new Array();
 			humansGroup = new Array;
-			createPoints(0, 800, num);
+			createPoints(0, SharedConst.STAGE_WIDTH, num);
 			
 			//trace("currentGroups:", num, "numPoints:",points.length);
 			while (i < humans.length)
@@ -482,6 +496,32 @@ package game.model.service
 			for each(var hName:String in humansGroup[num])
 			{
 				checkTribe(makeDead(hName,humans.indexOf(hName),"bloodyCorpse"))
+			}
+			onLeftClick(null);
+			//createGroups(currentGroups);
+		}
+		
+		public function addToTribe(what:int):void 
+		{
+			for (var i:int = 0; i < what;i++)
+			{	
+				var newPoint:Point = new Point(375 + Math.random() * currentDispersion, SharedConst.TRIBE_VERTICAL_POSITION + Math.random() * currentDispersion);
+				sendNotification(SharedConst.CMD_CREATE_HUMAN, {name:"human"+String(SharedConst.LAST_HUMAN_NAME+1),coord:newPoint});
+				humans.push("human" + String(SharedConst.LAST_HUMAN_NAME + 1))
+				SharedConst.LAST_HUMAN_NAME++;
+				
+			}
+			createGroups(currentGroups);
+			sendNotification(SharedConst.CHANGE_PEOPLE, { num:humans.length } );
+		}
+		
+		public function bornPeople():void 
+		{
+			if (SharedConst.SUPPLIES > 3)
+			{
+				SharedConst.SUPPLIES -= 3;
+				addToTribe(5);
+				sendNotification(SharedConst.CHANGE_SUPPLIES);
 			}
 		}
 		

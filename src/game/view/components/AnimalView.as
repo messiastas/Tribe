@@ -42,6 +42,9 @@ package game.view.components
 				case "crocodyle":
 					body = new Crocodyle();
 					break;
+				case "strangers":
+					body = new Strangers();
+					break;
 				default:
 					body = new Antelope();
 					break;
@@ -66,6 +69,9 @@ package game.view.components
 			{
 				case "eated":
 					body.gotoAndStop(2);
+				break;
+				case "goWithTribe":
+					body.gotoAndStop(3);
 				break;
 				case "CrocodyleGoleft":
 					body.rotation = -90;

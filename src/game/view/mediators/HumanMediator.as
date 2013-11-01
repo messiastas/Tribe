@@ -27,6 +27,9 @@ package game.view.mediators
 				SharedConst.ACTION_MOVE_HUMAN + humanName,
 				SharedConst.ACTION_CHANGE_ANGLE + humanName,
 				SharedConst.ACTION_CHANGE_STATE + humanName,
+				SharedConst.ACTION_TORCHES,
+				SharedConst.ACTION_WEAPONS,
+				SharedConst.ACTION_HANDS,
 			];
 			super( NAME + humanName, new HumanView(humanName) );
 		}
@@ -47,6 +50,18 @@ package game.view.mediators
 					break;
 				case SharedConst.ACTION_CHANGE_STATE + humanName:
 					human.setState(note.getBody())
+					
+					break;
+				case SharedConst.ACTION_TORCHES:
+					human.setState({newState:SharedConst.ACTION_TORCHES})
+					
+					break;
+				case SharedConst.ACTION_WEAPONS:
+					human.setState({newState:SharedConst.ACTION_WEAPONS})
+					
+					break;
+				case SharedConst.ACTION_HANDS:
+					human.setState({newState:SharedConst.ACTION_HANDS})
 					
 					break;
 				

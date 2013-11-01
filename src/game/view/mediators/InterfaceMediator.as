@@ -31,10 +31,38 @@ package game.view.mediators
 			super( NAME, new InterfaceView(NAME) );
 			panel.addEventListener("leftClick", onClick);
 			panel.addEventListener("rightClick", onClick);
+			
+			panel.addEventListener("onWeaponClick", onWeaponClick);
+			panel.addEventListener("onTorchClick", onTorchClick);
+			panel.addEventListener("onHandsClick", onHandsClick);
+			panel.addEventListener("onBornClick", onBornClick);
+		}
+		
+		private function onWeaponClick(e:Event):void 
+		{
+			sendNotification(SharedConst.ACTION_WEAPONS);
+			SharedConst.CURRENT_STATE = "weapon"
+		}
+		
+		private function onTorchClick(e:Event):void 
+		{
+			sendNotification(SharedConst.ACTION_TORCHES);
+			SharedConst.CURRENT_STATE = "torch"
+		}
+		
+		private function onHandsClick(e:Event):void 
+		{
+			sendNotification(SharedConst.ACTION_HANDS);
+			SharedConst.CURRENT_STATE = "hands"
+		}
+		
+		private function onBornClick(e:Event):void 
+		{
+			sendNotification(SharedConst.CMD_BORN_CLICK);
 		}
 		
 		private function onClick(e:Event):void {
-			trace(e.type);
+			//trace(e.type);
 			sendNotification(SharedConst.CMD_REGROUP_CLICK,{action:e.type})
 		}
 		
@@ -61,7 +89,7 @@ package game.view.mediators
 					
 					break;
 				case SharedConst.CHANGE_SUPPLIES:
-					panel.changeSupplies(note.getBody().num)
+					panel.changeSupplies()
 					
 					break;
 				

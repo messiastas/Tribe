@@ -63,10 +63,12 @@ package game.model.service
 						break;
 					case "crocodyle":
 						
-						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 25)
+						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 25 || SharedConst.CURRENT_STATE=="torch")
 						{
 							trace("Crocodyle SCARED");
 							needToStop = false;
+							SharedConst.SHAMAN_LEVEL++;
+							sendNotification(SharedConst.CHANGE_PEOPLE, { num:-1 } );
 							if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
 							{
 								
@@ -80,7 +82,7 @@ package game.model.service
 						}
 						break;
 					default:
-						trace("SOMEONE SCARED");
+						//trace("SOMEONE SCARED");
 						break;
 				}
 			} else if (Math.abs(currentPoint.y - SharedConst.TRIBE_VERTICAL_POSITION)<SharedConst.MAP_SPEED)
@@ -90,24 +92,93 @@ package game.model.service
 					case "antelope":
 						
 						var points:Array = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupPoints();
+						var scared:Boolean = true;
 						for each(var point:int in points)
 						{
-							if (Math.abs(point - currentPoint.x) <= 40)
+							if (Math.abs(point - currentPoint.x) <= 40 && SharedConst.CURRENT_STATE=="weapon")
 							{
 								SharedConst.SUPPLIES += 10;
 								sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
+								scared = false;
 								break;
+							} else 
+							{
+								
 							}
+						}
+						if (scared)
+						{
+							trace("ANTELOPE SCARED");
+								needToStop = false;
+								if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
+								{
+									
+									currentAngle = 270;
+								}	else
+								{
+									sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"AntelopeGoright"})
+									currentAngle = 90;
+								}
 						}
 						break;
 					case "crocodyle":
+						if (SharedConst.CURRENT_STATE != "torch")
+						{
+							
+							points = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupPoints();
+							for each(point in points)
+							{
+								if (Math.abs(point - currentPoint.x) <= 50 && (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() <= 25)
+								{
+									(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(point);
+								}
+							}
+						} else 
+						{
+							trace("Crocodyle SCARED");
+							needToStop = false;
+							SharedConst.SHAMAN_LEVEL++;
+							sendNotification(SharedConst.CHANGE_PEOPLE, { num:-1 } );
+							if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
+							{
+								
+								currentAngle = 270;
+								sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"CrocodyleGoleft"})
+							}	else
+							{
+								sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"CrocodyleGoright"})
+								currentAngle = 90;
+							}
+						}
+						break;
+					case "strangers":
 						
 						points = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupPoints();
 						for each(point in points)
 						{
-							if (Math.abs(point - currentPoint.x) <= 50 && (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() <= 25)
+							if (Math.abs(point - currentPoint.x) <= 50 )
 							{
-								(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(point);
+								if ( (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() >= 5)
+								{
+									if (SharedConst.SUPPLIES > 0 && SharedConst.CURRENT_STATE != "weapon")
+									{
+										trace("GO WITH TRIBE")
+										sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "goWithTribe"  } );
+										(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).addToTribe(5);
+										break;
+									} else 
+									{
+										trace("EAT STRANGERS")
+										SharedConst.SUPPLIES += 5;
+										sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
+									}
+								} else {
+									(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(point);
+									trace("KILL_GROUP")
+								}
+								
+								
+								break;
 							}
 						}
 						break;

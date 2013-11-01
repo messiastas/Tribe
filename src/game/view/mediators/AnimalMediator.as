@@ -30,7 +30,7 @@ package game.view.mediators
 				SharedConst.ACTION_CHANGE_STATE + humanName,
 			];
 			super( NAME + humanName, new AnimalView(note.type) );
-			trace("MEDIATOR", humanName);
+			//trace("MEDIATOR", humanName);
 		}
 		
 		override public function listNotificationInterests() : Array 

@@ -60,7 +60,24 @@ package game.view.components
 					body.scaleX = body.scaleY = 1.5;
 					break;
 				case "dead":
-					(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().removeChild(human);
+					try {
+						(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().removeChild(human);
+					} catch (er:Error)
+					{
+						
+					}
+					break;
+				case SharedConst.ACTION_TORCHES:
+					body.hand.gotoAndStop(3);
+					
+					break;
+				case SharedConst.ACTION_WEAPONS:
+					body.hand.gotoAndStop(2);
+					
+					break;
+				case SharedConst.ACTION_HANDS:
+					body.hand.gotoAndStop(1);
+					
 					break;
 			}
 		}

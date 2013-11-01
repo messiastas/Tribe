@@ -42,6 +42,7 @@ package game.common
 			registerCommand(SharedConst.CMD_CREATE_INTERFACE, createInterfaceCommand);
 			registerCommand(SharedConst.CMD_REGROUP_CLICK, regroupCommand);
 			registerCommand(SharedConst.CMD_CREATE_ANIMAL, createAnimalCommand);
+			registerCommand(SharedConst.CMD_BORN_CLICK, bornCommand);
 		}
 		
 		public function startup(newStage:Stage):void 

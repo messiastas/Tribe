@@ -38,11 +38,37 @@ package game.view.components
 			//var body:Rectangle = new Rectangle(0, 0, 20, 20);
 			body = new interfaceView();
 			movie.addChild(body);
-			trace("here");
+			//trace("here");
 			body.bRegroup.addEventListener(MouseEvent.CLICK, onLeftClick);
 			body.bRegroup.addEventListener(MouseEvent.RIGHT_CLICK, onRightClick);
+			
+			body.bWeapon.addEventListener(MouseEvent.CLICK, onWeaponClick);
+			body.bTorches.addEventListener(MouseEvent.CLICK, onTorchClick);
+			body.bHands.addEventListener(MouseEvent.CLICK, onHandsClick);
+			body.bBorn.addEventListener(MouseEvent.CLICK, onBornClick);
+			
 			helpTimer.addEventListener(TimerEvent.TIMER, removeHelp);
 			changePeople(SharedConst.TRIBE_SIZE);
+		}
+		
+		private function onWeaponClick(e:MouseEvent):void 
+		{
+			dispatchEvent(new Event("onWeaponClick"))
+		}
+		
+		private function onTorchClick(e:MouseEvent):void 
+		{
+			dispatchEvent(new Event("onTorchClick"))
+		}
+		
+		private function onHandsClick(e:MouseEvent):void 
+		{
+			dispatchEvent(new Event("onHandsClick"))
+		}
+		
+		private function onBornClick(e:MouseEvent):void 
+		{
+			dispatchEvent(new Event("onBornClick"))
 		}
 		
 		private function onLeftClick(e:MouseEvent):void 
@@ -84,13 +110,35 @@ package game.view.components
 		
 		public function changePeople(num:int):void 
 		{
-			body.people.text = String(num);
+			if(num>=0)
+				body.people.text = String(num);
 			body.shamanLevel.text = String(SharedConst.SHAMAN_LEVEL);
+			checkShamanLevel();
 		}
 		
-		public function changeSupplies(num:int):void 
+		public function changeSupplies():void 
 		{
-			body.supplies.text = String(num);
+			body.supplies.text = String(int(SharedConst.SUPPLIES));
+		}
+		
+		private function checkShamanLevel():void 
+		{
+			body.bWeapon.visible = false;
+			body.bTorches.visible = false;
+			body.bBorn.visible = false;
+			
+			if (SharedConst.SHAMAN_LEVEL >= SharedConst.LEVEL_FOR_WEAPON)
+			{
+				body.bWeapon.visible = true;
+				if (SharedConst.SHAMAN_LEVEL >= SharedConst.LEVEL_FOR_TORCH)
+				{
+					body.bTorches.visible = true;
+					if (SharedConst.SHAMAN_LEVEL >= SharedConst.LEVEL_FOR_BORN)
+					{
+						body.bBorn.visible = true;
+					}
+				}
+			}
 		}
 		
 		
