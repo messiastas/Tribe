@@ -57,6 +57,7 @@ package game.model.service
 				if (object.obj.y-object.coordY>SharedConst.STAGE_HEIGHT+object.obj.height)
 				{
 					objectsGraphic.removeChild(object.obj);
+					object.obj = null;
 					objectsArray.splice(objectsArray.indexOf(object), 1);
 				}
 			}
@@ -110,38 +111,6 @@ package game.model.service
 			
 		}
 		
-		private function createMap():void 
-		{
-			var i:int = 0;//vertical
-			var j:int = 0;//horizontal
-			var bMap:BitmapData = new BitmapData(currentMapGraphic.width, currentMapGraphic.height, true, 0);
-			bMap.fillRect(bMap.rect, 0);
-			bMap.draw(currentMapGraphic);
-			
-			
-			//trace(currentMapGraphic.width, currentMapGraphic.height);
-			while (i * mapStep < currentMapGraphic.height)
-			{
-				var horizontalArray:Array = [];
-				while (j * mapStep < currentMapGraphic.width)
-				{
-					
-					if (bMap.getPixel(j * mapStep + mapStep *0.5, i * mapStep + mapStep *0.5)>0)
-					{
-						//trace(i, j);
-						horizontalArray[j] = 1
-					} else 
-					{
-						horizontalArray[j] = 0
-					}
-					j++;
-				}
-				realMap[i] = horizontalArray;
-				i++;
-				j = 0;
-			}
-			//trace(realMap);
-		}
 		
 		public function getMapArray():Array
 		{

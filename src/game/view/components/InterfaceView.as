@@ -2,6 +2,7 @@ package game.view.components
 {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
@@ -46,9 +47,45 @@ package game.view.components
 			body.bTorches.addEventListener(MouseEvent.CLICK, onTorchClick);
 			body.bHands.addEventListener(MouseEvent.CLICK, onHandsClick);
 			body.bBorn.addEventListener(MouseEvent.CLICK, onBornClick);
+			body.bSacrifice.addEventListener(MouseEvent.CLICK, onSacrificeClick);
+			
+			body.bWeapon.buttonMode = true;
+			body.bTorches.buttonMode = true;
+			body.bHands.buttonMode = true;
+			body.bBorn.buttonMode = true;
+			body.bSacrifice.buttonMode = true;
+			
+			GameFacade.getInstance().mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			
 			helpTimer.addEventListener(TimerEvent.TIMER, removeHelp);
 			changePeople(SharedConst.TRIBE_SIZE);
+		}
+		
+		private function onKeyDown(e:KeyboardEvent):void 
+		{
+			switch (e.keyCode)
+			{
+				case 49:
+					if (body.bHands.visible)
+						onHandsClick(null);
+					break;
+				case 50:
+					if (body.bWeapon.visible)
+						onWeaponClick(null);
+					break;
+				case 51:
+					if (body.bTorches.visible)
+						onTorchClick(null);
+					break;
+				case 52:
+					if (body.bBorn.visible)
+						onBornClick(null);
+					break;
+				case 53:
+					if (body.bSacrifice.visible)
+						onSacrificeClick(null);
+					break;
+			}
 		}
 		
 		private function onWeaponClick(e:MouseEvent):void 
@@ -69,6 +106,11 @@ package game.view.components
 		private function onBornClick(e:MouseEvent):void 
 		{
 			dispatchEvent(new Event("onBornClick"))
+		}
+		
+		private function onSacrificeClick(e:MouseEvent):void 
+		{
+			dispatchEvent(new Event("onSacrificeClick"))
 		}
 		
 		private function onLeftClick(e:MouseEvent):void 
@@ -126,6 +168,7 @@ package game.view.components
 			body.bWeapon.visible = false;
 			body.bTorches.visible = false;
 			body.bBorn.visible = false;
+			body.bSacrifice.visible = false;
 			
 			if (SharedConst.SHAMAN_LEVEL >= SharedConst.LEVEL_FOR_WEAPON)
 			{
@@ -136,6 +179,10 @@ package game.view.components
 					if (SharedConst.SHAMAN_LEVEL >= SharedConst.LEVEL_FOR_BORN)
 					{
 						body.bBorn.visible = true;
+						if (SharedConst.SHAMAN_LEVEL >= SharedConst.LEVEL_FOR_SACRIFICE)
+						{
+							body.bSacrifice.visible = true;
+						}
 					}
 				}
 			}

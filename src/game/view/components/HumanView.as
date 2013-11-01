@@ -62,9 +62,10 @@ package game.view.components
 				case "dead":
 					try {
 						(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().removeChild(human);
+						body = null;
 					} catch (er:Error)
 					{
-						
+						//body = null;
 					}
 					break;
 				case SharedConst.ACTION_TORCHES:

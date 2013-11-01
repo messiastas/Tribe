@@ -34,11 +34,7 @@ package game.model.service
 		{
 			//trace("ANIMAL STEP",humanName);
 			currentPoint.y -= SharedConst.MAP_SPEED;
-			if (!needToStop)
-			{
-				currentPoint.x += Math.sin(currentAngle *0.0175) * currentSpeed;
-				currentPoint.y -= Math.cos(currentAngle * 0.0175) * currentSpeed;
-			}
+			
 			sendNotification(SharedConst.ACTION_MOVE_HUMAN + humanName, { "newX": currentPoint.x, "newY": currentPoint.y } );
 			if (Math.abs(currentPoint.y - SharedConst.TRIBE_VERTICAL_POSITION*2)<SharedConst.MAP_SPEED)
 			{
@@ -151,6 +147,20 @@ package game.model.service
 							}
 						}
 						break;
+					case "berry":
+						
+						points = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupPoints();
+						for each(point in points)
+						{
+							if (Math.abs(point - currentPoint.x) <= 40 && SharedConst.CURRENT_STATE=="")
+							{
+								SharedConst.SUPPLIES += 8;
+								sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
+								break;
+							} 
+						}
+						
+						break;
 					case "strangers":
 						
 						points = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupPoints();
@@ -186,6 +196,11 @@ package game.model.service
 						trace("SOMEONE SCARED");
 						break;
 				}
+			}
+			if (!needToStop)
+			{
+				currentPoint.x += Math.sin(currentAngle *0.0175) * currentSpeed;
+				currentPoint.y -= Math.cos(currentAngle * 0.0175) * currentSpeed;
 			}
 		}
 		

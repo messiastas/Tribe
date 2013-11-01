@@ -45,6 +45,9 @@ package game.view.components
 				case "strangers":
 					body = new Strangers();
 					break;
+				case "berry":
+					body = new Berry();
+					break;
 				default:
 					body = new Antelope();
 					break;

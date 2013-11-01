@@ -19,6 +19,7 @@ package game.common.interfaces
 		function killGroup(what:int):void;
 		function addToTribe(what:int):void;
 		function bornPeople():void;
+		function sacrificePeople():void;
 	}
 	
 }

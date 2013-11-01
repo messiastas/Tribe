@@ -12,6 +12,7 @@ package game.common
 		public static const CMD_CREATE_INTERFACE:String = "cmd_create_interface";
 		public static const CMD_REGROUP_CLICK:String = "cmd_REGROUP_CLICK";
 		public static const CMD_BORN_CLICK:String = "cmd_born_click";
+		public static const CMD_SACRIFICE_CLICK:String = "cmd_sacrifice_click";
 		
 		public static const SHOW_HELP_LEFT:String = "show_help_left";
 		public static const SHOW_HELP_RIGHT:String = "show_help_right";
@@ -49,6 +50,7 @@ package game.common
 		public static const LEVEL_FOR_WEAPON:int = 2;
 		public static const LEVEL_FOR_TORCH:int = 4;
 		public static const LEVEL_FOR_BORN:int = 6;
+		public static const LEVEL_FOR_SACRIFICE:int = 8;
 		public static var CURRENT_DISPERSION:Number = 50;
 		public static var LAST_HUMAN_NAME:int = 0;
 		
@@ -58,13 +60,13 @@ package game.common
 													[	
 														{ distance:10, objects:[ "bridge2"], safeZones:[[210, 320], [490, 590]], long:200 },
 														{ distance:300, objects:["show_help_right"] }, 
-														{ distance:350, objects:["animal"],type:"strangers",position:200},
+														{ distance:400, objects:["animal"],type:"berry",position:400},
 														{ distance:500, objects:[ "bridge1"], safeZones:[[300, 500]], long:200 },
-														{ distance:800, objects:["show_help_left"] },
-														{ distance:810, objects:["animal"], type:"antelope", position:750 },
+														{ distance:700, objects:["show_help_left"] },
+														/*{ distance:810, objects:["animal"], type:"antelope", position:750 },
 														{ distance:1200, objects:["animal"], type:"crocodyle", position:350 },
 														{ distance:1250, objects:["animal"], type:"crocodyle", position:600 },
-														{ distance:1600, objects:["animal"],type:"antelope",position:320},
+														{ distance:1600, objects:["animal"],type:"antelope",position:320},*/
 													],
 													
 													]

@@ -36,6 +36,7 @@ package game.view.mediators
 			panel.addEventListener("onTorchClick", onTorchClick);
 			panel.addEventListener("onHandsClick", onHandsClick);
 			panel.addEventListener("onBornClick", onBornClick);
+			panel.addEventListener("onSacrificeClick", onSacrificeClick);
 		}
 		
 		private function onWeaponClick(e:Event):void 
@@ -53,12 +54,17 @@ package game.view.mediators
 		private function onHandsClick(e:Event):void 
 		{
 			sendNotification(SharedConst.ACTION_HANDS);
-			SharedConst.CURRENT_STATE = "hands"
+			SharedConst.CURRENT_STATE = ""
 		}
 		
 		private function onBornClick(e:Event):void 
 		{
 			sendNotification(SharedConst.CMD_BORN_CLICK);
+		}
+		
+		private function onSacrificeClick(e:Event):void 
+		{
+			sendNotification(SharedConst.CMD_SACRIFICE_CLICK);
 		}
 		
 		private function onClick(e:Event):void {

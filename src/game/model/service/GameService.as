@@ -313,9 +313,9 @@ package game.model.service
 		{
 			var types:Array = ["river", "animal"];
 				var bridges:Array = [1, 2];
-				var animals:Array = ["antelope", "crocodyle"];
+				//var animals:Array = ["antelope", "crocodyle"];
 				
-				var distance:int = lastObjectLong + 50 + Math.random()*500+SharedConst.SPEND_DISTANCE;
+				var distance:int = lastObjectLong + 50 + Math.random()*300+SharedConst.SPEND_DISTANCE;
 				var objects:Array;
 				var type:String = "";
 				var safeZones:Array = [];
@@ -325,14 +325,17 @@ package game.model.service
 				{
 					lastObjectLong = 0;
 					objects = ["animal"]
-					position = 50 + Math.random() * (SharedConst.STAGE_WIDTH - 50);
-					if (Math.random() > .6)//antelope
+					position = 100 + Math.random() * (SharedConst.STAGE_WIDTH - 200);
+					if (Math.random() > .8)//antelope
 					{
 						type = "antelope"
-					} else if (Math.random() > .4)//strangers
+					} else if (Math.random() > .6)//strangers
 					{
 						type = "strangers"
-					} else //crocodyle
+					} else if (Math.random() > .4)//berry
+					{
+						type = "berry"
+					}else //crocodyle
 					{
 						type = "crocodyle"
 					}
@@ -521,6 +524,20 @@ package game.model.service
 			{
 				SharedConst.SUPPLIES -= 3;
 				addToTribe(5);
+				sendNotification(SharedConst.CHANGE_SUPPLIES);
+			}
+		}
+		
+		public function sacrificePeople():void 
+		{
+			if (humans.length > 5)
+			{
+				SharedConst.SUPPLIES += 3;
+				checkTribe(makeDead(humans[humans.length - 1], humans.length - 1, "bloodyCorpse"));
+				checkTribe(makeDead(humans[0], 0, "bloodyCorpse"));
+				checkTribe(makeDead(humans[humans.length - 1], humans.length - 1, "bloodyCorpse"));
+				checkTribe(makeDead(humans[0], 0, "bloodyCorpse"));
+				checkTribe(makeDead(humans[humans.length - 1], humans.length - 1,"bloodyCorpse"));
 				sendNotification(SharedConst.CHANGE_SUPPLIES);
 			}
 		}

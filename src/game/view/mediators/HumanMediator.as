@@ -19,6 +19,7 @@ package game.view.mediators
 		private var humanName:String = "John Smith";
 		
 		private var interests:Array = new Array
+		private var handleFunction:Function;
 		
 		public function HumanMediator(Name:String):void
 		{
@@ -32,6 +33,7 @@ package game.view.mediators
 				SharedConst.ACTION_HANDS,
 			];
 			super( NAME + humanName, new HumanView(humanName) );
+			handleFunction = onHandle;
 		}
 		
 		override public function listNotificationInterests() : Array 
@@ -42,6 +44,12 @@ package game.view.mediators
 		override public function handleNotification( note : INotification ) : void  
 		{
 			//trace(note.getName());
+			if(handleFunction !=null)
+				handleFunction(note);
+		}
+		
+		public function onHandle(note:INotification):void 
+		{
 			var obj:Object = note.getBody();
 			switch ( note.getName() ) 
 			{
@@ -50,7 +58,12 @@ package game.view.mediators
 					break;
 				case SharedConst.ACTION_CHANGE_STATE + humanName:
 					human.setState(note.getBody())
-					
+					if (note.getBody().newState == "dead")
+					{
+						//interests = [];
+						handleFunction = null;
+						
+					}
 					break;
 				case SharedConst.ACTION_TORCHES:
 					human.setState({newState:SharedConst.ACTION_TORCHES})
