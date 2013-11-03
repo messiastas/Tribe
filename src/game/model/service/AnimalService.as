@@ -44,7 +44,7 @@ package game.model.service
 						
 						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 10)
 						{
-							trace("ANTELOPE SCARED");
+							//trace("ANTELOPE SCARED");
 							needToStop = false;
 							if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
 							{
@@ -61,7 +61,7 @@ package game.model.service
 						
 						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 25 || SharedConst.CURRENT_STATE=="torch")
 						{
-							trace("Crocodyle SCARED");
+							//trace("Crocodyle SCARED");
 							needToStop = false;
 							SharedConst.SHAMAN_LEVEL++;
 							sendNotification(SharedConst.CHANGE_PEOPLE, { num:-1 } );
@@ -104,7 +104,7 @@ package game.model.service
 						}
 						if (scared)
 						{
-							trace("ANTELOPE SCARED");
+							//trace("ANTELOPE SCARED");
 								needToStop = false;
 								if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
 								{
@@ -131,7 +131,7 @@ package game.model.service
 							}
 						} else 
 						{
-							trace("Crocodyle SCARED");
+							//trace("Crocodyle SCARED");
 							needToStop = false;
 							SharedConst.SHAMAN_LEVEL++;
 							sendNotification(SharedConst.CHANGE_PEOPLE, { num:-1 } );
@@ -202,6 +202,17 @@ package game.model.service
 				currentPoint.x += Math.sin(currentAngle *0.0175) * currentSpeed;
 				currentPoint.y -= Math.cos(currentAngle * 0.0175) * currentSpeed;
 			}
+			
+			if (currentPoint.y < 0)
+			{
+				removeAnimal();
+			}
+		}
+		
+		private function removeAnimal():void 
+		{
+			sendNotification(SharedConst.REMOVE_ANIMAL + humanName);
+			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).removeAnimal(humanName);
 		}
 		
 		

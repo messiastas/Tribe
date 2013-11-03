@@ -14,6 +14,7 @@ package game.view.components
 	import game.common.GameFacade
 	import game.common.interfaces.*;
 	import game.common.SharedConst;
+	import flash.system.*;
 	
 	/**
 	 * ...
@@ -25,7 +26,7 @@ package game.view.components
 		private var body:interfaceView;
 		private var humanName:String = "";
 		private var helpClip:MovieClip;
-		private var helpTimer:Timer = new Timer(2000);
+		private var helpTimer:Timer = new Timer(1000);
 		
 		
 		public function InterfaceView(hName:String) 
@@ -55,10 +56,13 @@ package game.view.components
 			body.bBorn.buttonMode = true;
 			body.bSacrifice.buttonMode = true;
 			
+			body.levelTime.gotoAndStop(1);
+			
 			GameFacade.getInstance().mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			
-			helpTimer.addEventListener(TimerEvent.TIMER, removeHelp);
-			changePeople(SharedConst.TRIBE_SIZE);
+			helpTimer.addEventListener(TimerEvent.TIMER, refreshTime);
+			helpTimer.start();
+			changePeople();
 		}
 		
 		private function onKeyDown(e:KeyboardEvent):void 
@@ -84,6 +88,9 @@ package game.view.components
 				case 53:
 					if (body.bSacrifice.visible)
 						onSacrificeClick(null);
+					break;
+				case 27:
+					fscommand("quit");
 					break;
 			}
 		}
@@ -142,18 +149,31 @@ package game.view.components
 			body.addChildAt(helpClip, 0);
 			helpClip.x = 800 / 2;
 			helpClip.y = SharedConst.STAGE_HEIGHT / 4;
+			helpTimer.reset();
 			helpTimer.start();
+			helpTimer.addEventListener(TimerEvent.TIMER, removeHelp);
 		}
 		private function removeHelp(e:TimerEvent):void 
 		{
 			body.removeChild(helpClip);
-			helpTimer.reset();
+			helpTimer.removeEventListener(TimerEvent.TIMER, removeHelp);
+			//helpTimer.reset();
 		}
 		
-		public function changePeople(num:int):void 
+		
+		private function refreshTime(e:TimerEvent):void 
 		{
-			if(num>=0)
-				body.people.text = String(num);
+			body.levelTime.gotoAndStop(int(body.levelTime.totalFrames*(SharedConst.SPEND_DISTANCE / SharedConst.MAP_DISTANCE)))
+			if (SharedConst.SPEND_DISTANCE > SharedConst.MAP_DISTANCE)
+			{
+				dispatchEvent(new Event("finishLevel"))
+			}
+		}
+		
+		public function changePeople():void 
+		{
+			
+			body.people.text = String(SharedConst.TRIBE_SIZE);
 			body.shamanLevel.text = String(SharedConst.SHAMAN_LEVEL);
 			checkShamanLevel();
 		}
@@ -186,6 +206,20 @@ package game.view.components
 					}
 				}
 			}
+		}
+		
+		public function removeListeners():void 
+		{
+			body.bRegroup.removeEventListener(MouseEvent.CLICK, onLeftClick);
+			body.bRegroup.removeEventListener(MouseEvent.RIGHT_CLICK, onRightClick);
+			
+			body.bWeapon.removeEventListener(MouseEvent.CLICK, onWeaponClick);
+			body.bTorches.removeEventListener(MouseEvent.CLICK, onTorchClick);
+			body.bHands.removeEventListener(MouseEvent.CLICK, onHandsClick);
+			body.bBorn.removeEventListener(MouseEvent.CLICK, onBornClick);
+			body.bSacrifice.removeEventListener(MouseEvent.CLICK, onSacrificeClick);
+			helpTimer.removeEventListener(TimerEvent.TIMER, refreshTime);
+			helpTimer.stop();
 		}
 		
 		

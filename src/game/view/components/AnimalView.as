@@ -88,6 +88,11 @@ package game.view.components
 			}
 		}
 		
+		public function removeAnimal():void 
+		{
+			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().removeChild(human);
+		}
+		
 		
 		
 	}

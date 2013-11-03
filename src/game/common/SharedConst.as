@@ -13,6 +13,7 @@ package game.common
 		public static const CMD_REGROUP_CLICK:String = "cmd_REGROUP_CLICK";
 		public static const CMD_BORN_CLICK:String = "cmd_born_click";
 		public static const CMD_SACRIFICE_CLICK:String = "cmd_sacrifice_click";
+		public static const CMD_FINISH_LEVEL:String = "cmd_finish_level";
 		
 		public static const SHOW_HELP_LEFT:String = "show_help_left";
 		public static const SHOW_HELP_RIGHT:String = "show_help_right";
@@ -26,6 +27,9 @@ package game.common
 		public static const ACTION_TORCHES:String = "action_torches";
 		public static const ACTION_WEAPONS:String = "action_weapons";
 		public static const ACTION_HANDS:String = "action_hands";
+		
+		public static const REMOVE_LISTENERS:String = "remove_listeners";
+		public static const REMOVE_ANIMAL:String = "remove_animal";
 		
 		
 		
@@ -42,10 +46,12 @@ package game.common
 		public static const STAGE_HEIGHT:int = 600;
 		public static const STAGE_WIDTH:int = 800;
 		public static const TRIBE_VERTICAL_POSITION:int = 75;
-		public static const TRIBE_SIZE:int = 50;
+		public static var TRIBE_SIZE:int = 50;
 		public static const ACTION_TIME:int = 30;
 		public static const HELP_TIME:int = 60;
 		public static const MAP_STEP:int = 20;
+		
+		public static var MAP_DISTANCE:int = MAP_SPEED * (int(1000 / ACTION_TIME)) * 60;
 		
 		public static const LEVEL_FOR_WEAPON:int = 2;
 		public static const LEVEL_FOR_TORCH:int = 4;

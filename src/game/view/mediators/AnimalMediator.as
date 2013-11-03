@@ -24,10 +24,13 @@ package game.view.mediators
 		public function AnimalMediator(note:Object):void
 		{
 			humanName = note.name;	
+			mediatorName = humanName;
 			interests = [
 				SharedConst.ACTION_MOVE_HUMAN + humanName,
 				SharedConst.ACTION_CHANGE_ANGLE + humanName,
 				SharedConst.ACTION_CHANGE_STATE + humanName,
+				SharedConst.REMOVE_ANIMAL + humanName,
+				SharedConst.REMOVE_LISTENERS,
 			];
 			super( NAME + humanName, new AnimalView(note.type) );
 			//trace("MEDIATOR", humanName);
@@ -49,6 +52,15 @@ package game.view.mediators
 					break;
 				case SharedConst.ACTION_CHANGE_STATE + humanName:
 					human.setState(note.getBody())
+					
+					break;
+				case SharedConst.REMOVE_LISTENERS:
+					GameFacade.getInstance().removeMediator(mediatorName);
+					
+					break;
+				case SharedConst.REMOVE_ANIMAL+humanName:
+					human.removeAnimal();
+					GameFacade.getInstance().removeMediator(mediatorName);
 					
 					break;
 				

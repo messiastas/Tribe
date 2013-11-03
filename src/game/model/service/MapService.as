@@ -80,6 +80,9 @@ package game.model.service
 				case "bridge1":
 					newObject = new Bridge1;
 					break;
+				case "bridge4":
+					newObject = new Bridge4;
+					break;
 				default:
 					needToAdd = false;
 					break;

@@ -20,6 +20,8 @@ package game.common.interfaces
 		function addToTribe(what:int):void;
 		function bornPeople():void;
 		function sacrificePeople():void;
+		function finishLevel():void;
+		function removeAnimal(aName:String):void;
 	}
 	
 }

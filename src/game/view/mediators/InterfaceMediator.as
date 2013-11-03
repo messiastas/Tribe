@@ -21,12 +21,13 @@ package game.view.mediators
 		
 		public function InterfaceMediator(Name:String):void
 		{
-			
+			mediatorName = Name;
 			interests = [
 				SharedConst.SHOW_HELP_LEFT,
 				SharedConst.SHOW_HELP_RIGHT,
 				SharedConst.CHANGE_PEOPLE,
 				SharedConst.CHANGE_SUPPLIES,
+				SharedConst.REMOVE_LISTENERS,
 			];
 			super( NAME, new InterfaceView(NAME) );
 			panel.addEventListener("leftClick", onClick);
@@ -37,6 +38,8 @@ package game.view.mediators
 			panel.addEventListener("onHandsClick", onHandsClick);
 			panel.addEventListener("onBornClick", onBornClick);
 			panel.addEventListener("onSacrificeClick", onSacrificeClick);
+			
+			panel.addEventListener("finishLevel", onFinishLevel);
 		}
 		
 		private function onWeaponClick(e:Event):void 
@@ -72,6 +75,11 @@ package game.view.mediators
 			sendNotification(SharedConst.CMD_REGROUP_CLICK,{action:e.type})
 		}
 		
+		private function onFinishLevel(e:Event):void 
+		{
+			sendNotification(SharedConst.CMD_FINISH_LEVEL);
+		}
+		
 		override public function listNotificationInterests() : Array 
 		{
 			return interests; 
@@ -91,12 +99,26 @@ package game.view.mediators
 					
 					break;
 				case SharedConst.CHANGE_PEOPLE:
-					panel.changePeople(note.getBody().num)
+					panel.changePeople()
 					
 					break;
 				case SharedConst.CHANGE_SUPPLIES:
 					panel.changeSupplies()
 					
+					break;
+				case SharedConst.REMOVE_LISTENERS:
+					panel.removeEventListener("leftClick", onClick);
+					panel.removeEventListener("rightClick", onClick);
+					
+					panel.removeEventListener("onWeaponClick", onWeaponClick);
+					panel.removeEventListener("onTorchClick", onTorchClick);
+					panel.removeEventListener("onHandsClick", onHandsClick);
+					panel.removeEventListener("onBornClick", onBornClick);
+					panel.removeEventListener("onSacrificeClick", onSacrificeClick);
+					
+					panel.removeEventListener("finishLevel", onFinishLevel);
+					panel.removeListeners();
+					GameFacade.getInstance().removeMediator(mediatorName);
 					break;
 				
 			}

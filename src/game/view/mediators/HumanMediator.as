@@ -19,11 +19,12 @@ package game.view.mediators
 		private var humanName:String = "John Smith";
 		
 		private var interests:Array = new Array
-		private var handleFunction:Function;
+		//private var handleFunction:Function;
 		
 		public function HumanMediator(Name:String):void
 		{
-			humanName = Name;	
+			humanName = Name;
+			mediatorName = humanName;
 			interests = [
 				SharedConst.ACTION_MOVE_HUMAN + humanName,
 				SharedConst.ACTION_CHANGE_ANGLE + humanName,
@@ -31,9 +32,10 @@ package game.view.mediators
 				SharedConst.ACTION_TORCHES,
 				SharedConst.ACTION_WEAPONS,
 				SharedConst.ACTION_HANDS,
+				SharedConst.REMOVE_LISTENERS,
 			];
 			super( NAME + humanName, new HumanView(humanName) );
-			handleFunction = onHandle;
+			//handleFunction = onHandle;
 		}
 		
 		override public function listNotificationInterests() : Array 
@@ -41,14 +43,14 @@ package game.view.mediators
 			return interests; 
 		}
 		
-		override public function handleNotification( note : INotification ) : void  
+		/*override public function handleNotification( note : INotification ) : void  
 		{
 			//trace(note.getName());
 			if(handleFunction !=null)
 				handleFunction(note);
-		}
+		}*/
 		
-		public function onHandle(note:INotification):void 
+		override public function handleNotification(note:INotification):void 
 		{
 			var obj:Object = note.getBody();
 			switch ( note.getName() ) 
@@ -61,8 +63,8 @@ package game.view.mediators
 					if (note.getBody().newState == "dead")
 					{
 						//interests = [];
-						handleFunction = null;
-						
+						//handleFunction = null;
+						GameFacade.getInstance().removeMediator(mediatorName);
 					}
 					break;
 				case SharedConst.ACTION_TORCHES:
@@ -75,6 +77,11 @@ package game.view.mediators
 					break;
 				case SharedConst.ACTION_HANDS:
 					human.setState({newState:SharedConst.ACTION_HANDS})
+					
+					break;
+				case SharedConst.REMOVE_LISTENERS:
+					human.removeAll();
+					GameFacade.getInstance().removeMediator(mediatorName);
 					
 					break;
 				

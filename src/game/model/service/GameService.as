@@ -61,6 +61,7 @@ package game.model.service
 		private var introClip:IntroClip;
 		
 		private var lastObjectLong:int = 0;
+		private var lastAnimal:int = 0;
 		public function GameService(pname:String,data:Object = null ):void 
 		{
 			proxyName = pname;//SharedConst.GAME_SERVICE;
@@ -220,14 +221,15 @@ package game.model.service
 						i++
 				}
 			}
-			switch (currentLevelType)
+			scrollerAction();
+			/*switch (currentLevelType)
 			{
 				case SharedConst.LEVELTYPE_SCROLLER:
 					scrollerAction();
 					
 					break;
 			}
-			
+			*/
 			i = 0;
 			while (i < animals.length)
 			{
@@ -235,8 +237,9 @@ package game.model.service
 					i++
 			}
 			
-			if (iteration % 15 == 0)
+			if (iteration == 15)
 			{
+				iteration = 0;
 				SharedConst.SUPPLIES -= SharedConst.SUPPLIES_EAT * humans.length
 				
 				if (SharedConst.SUPPLIES <= 0 && humans.length>0)
@@ -315,13 +318,13 @@ package game.model.service
 				var bridges:Array = [1, 2];
 				//var animals:Array = ["antelope", "crocodyle"];
 				
-				var distance:int = lastObjectLong + 50 + Math.random()*300+SharedConst.SPEND_DISTANCE;
+				var distance:int = lastObjectLong + 50 + Math.random()*150+SharedConst.SPEND_DISTANCE;
 				var objects:Array;
 				var type:String = "";
 				var safeZones:Array = [];
 				var position:int = 0;
 				var long:int = 200;
-				if (Math.random() > .3)//animal
+				if (Math.random() > .2)//animal
 				{
 					lastObjectLong = 0;
 					objects = ["animal"]
@@ -343,11 +346,15 @@ package game.model.service
 				{
 					long = 200;
 					
-					if (Math.random() > 0.5)//1
+					if (Math.random() > 0.65)//1
 					{
 						objects = ["river", "bridge1"];
 						safeZones = [[300, 500]]
-					} else //2
+					} else if (Math.random() > 0.35)//4
+					{
+						objects = ["river", "bridge4"];
+						safeZones = [[120, 200], [285, 360],[435, 520], [600, 680]]
+					} else//2
 					{
 						objects = ["river", "bridge2"];
 						safeZones = [[210, 320], [490, 590]]
@@ -386,10 +393,11 @@ package game.model.service
 				//createGroups(currentGroups);
 			} else 
 			{
-				actionTimer.stop();
 				
+				finishLevel();
 			}
-			sendNotification(SharedConst.CHANGE_PEOPLE, { num:humans.length } );
+			SharedConst.TRIBE_SIZE = humans.length;
+			sendNotification(SharedConst.CHANGE_PEOPLE );
 		}
 		
 		public function createObject(levelObject:Object):void 
@@ -407,13 +415,19 @@ package game.model.service
 					sendNotification(object, null);
 				}else if (object=="animal")
 				{
-					var aname:String = levelObject.type + String(animals.length)
+					var aname:String = levelObject.type + String(lastAnimal)
+					lastAnimal++;
 					sendNotification(SharedConst.CMD_CREATE_ANIMAL, { name:aname, coord:new Point(levelObject.position, SharedConst.STAGE_HEIGHT), type: levelObject.type} );
 					animals.push(aname);
 				}
 				
 				(GameFacade.getInstance().retrieveProxy(SharedConst.MAP_SERVICE) as ILevelDesign).addToObjects(object);
 			}
+		}
+		
+		public function removeAnimal(aName:String):void 
+		{
+			animals.splice(animals.indexOf(aName), 1);
 		}
 		
 		
@@ -515,7 +529,8 @@ package game.model.service
 				
 			}
 			createGroups(currentGroups);
-			sendNotification(SharedConst.CHANGE_PEOPLE, { num:humans.length } );
+			SharedConst.TRIBE_SIZE = humans.length;
+			sendNotification(SharedConst.CHANGE_PEOPLE );
 		}
 		
 		public function bornPeople():void 
@@ -533,13 +548,30 @@ package game.model.service
 			if (humans.length > 5)
 			{
 				SharedConst.SUPPLIES += 3;
-				checkTribe(makeDead(humans[humans.length - 1], humans.length - 1, "bloodyCorpse"));
-				checkTribe(makeDead(humans[0], 0, "bloodyCorpse"));
-				checkTribe(makeDead(humans[humans.length - 1], humans.length - 1, "bloodyCorpse"));
-				checkTribe(makeDead(humans[0], 0, "bloodyCorpse"));
-				checkTribe(makeDead(humans[humans.length - 1], humans.length - 1,"bloodyCorpse"));
+				
+				if((makeDead(humans[humans.length - 1], humans.length - 1, "bloodyCorpse")) ||
+				(makeDead(humans[0], 0, "bloodyCorpse")) ||
+				(makeDead(humans[humans.length - 1], humans.length - 1, "bloodyCorpse")) ||
+				(makeDead(humans[0], 0, "bloodyCorpse")) ||
+				(makeDead(humans[humans.length - 1], humans.length - 1, "bloodyCorpse"))
+				)
+				{
+					checkTribe(true);
+				} else 
+				{
+					checkTribe(false);
+				}
 				sendNotification(SharedConst.CHANGE_SUPPLIES);
 			}
+		}
+		
+		public function finishLevel():void
+		{
+			actionTimer.stop();
+			//GameFacade.getInstance().mainStage.removeEventListener(MouseEvent.RIGHT_CLICK, nullRightClick);
+			actionTimer.removeEventListener(TimerEvent.TIMER, onActionTimer);
+			sendNotification(SharedConst.REMOVE_LISTENERS);
+			trace(animals.length);
 		}
 		
 		public function getGroupSize():int 
