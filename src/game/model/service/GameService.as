@@ -77,7 +77,12 @@ package game.model.service
 			GameFacade.getInstance().mainStage.addChild(mcInterface);
 			actionTimer.addEventListener(TimerEvent.TIMER, onActionTimer);
 			createMap();
-			startIntro();
+			
+			createHumans();
+			createGroups(currentGroups);
+			createInterface();
+			startLevel();
+			//startIntro();
 			
 			
 			
@@ -145,8 +150,8 @@ package game.model.service
 		
 		private function startLevel():void 
 		{
-			if (SharedConst.CURRENT_LEVEL % 2 != 0)
-				currentLevelType = SharedConst.LEVELTYPE_SCROLLER;
+			//if (SharedConst.CURRENT_LEVEL % 2 != 0)
+			currentLevelType = SharedConst.LEVELTYPE_SCROLLER;
 				
 			currentLevelArray = SharedConst.LEVELS_ARRAY[SharedConst.CURRENT_LEVEL-1];
 			actionTimer.start();
@@ -246,7 +251,8 @@ package game.model.service
 				{
 					SharedConst.SUPPLIES = 0;
 					var num:int = int(Math.random()*(humans.length-1))
-					checkTribe(makeDead(humans[num],num,"normalCorpse"))
+					checkTribe(makeDead(humans[num], num, "normalCorpse"))
+					
 				}
 				sendNotification(SharedConst.CHANGE_SUPPLIES );
 			}
@@ -348,15 +354,15 @@ package game.model.service
 					
 					if (Math.random() > 0.65)//1
 					{
-						objects = ["river", "bridge1"];
+						objects = [ "bridge1"];
 						safeZones = [[300, 500]]
 					} else if (Math.random() > 0.35)//4
 					{
-						objects = ["river", "bridge4"];
+						objects = [ "bridge4"];
 						safeZones = [[120, 200], [285, 360],[435, 520], [600, 680]]
 					} else//2
 					{
-						objects = ["river", "bridge2"];
+						objects = [ "bridge2"];
 						safeZones = [[210, 320], [490, 590]]
 					}
 					lastObjectLong = long;
@@ -371,6 +377,8 @@ package game.model.service
 			if (	human.makeDead() == "shaman")
 				needShaman = true;
 			humans.splice(hNum, 1);
+			GameFacade.getInstance().removeProxy(humanName);
+			//trace(humanName, "deleted", GameFacade.getInstance().retrieveProxy(humanName));
 			(GameFacade.getInstance().retrieveProxy(SharedConst.MAP_SERVICE) as ILevelDesign).addToObjects(death,human.getCurrentPoint().x,human.getCurrentPoint().y)
 			//hNum--;
 			//trace(h, "is dead");
@@ -379,6 +387,8 @@ package game.model.service
 		
 		private function checkTribe(needShaman:Boolean):void 
 		{
+			SharedConst.TRIBE_SIZE = humans.length;
+			sendNotification(SharedConst.CHANGE_PEOPLE );
 			if (humans.length > 0)
 			{
 				
@@ -396,8 +406,7 @@ package game.model.service
 				
 				finishLevel();
 			}
-			SharedConst.TRIBE_SIZE = humans.length;
-			sendNotification(SharedConst.CHANGE_PEOPLE );
+			
 		}
 		
 		public function createObject(levelObject:Object):void 
@@ -428,6 +437,7 @@ package game.model.service
 		public function removeAnimal(aName:String):void 
 		{
 			animals.splice(animals.indexOf(aName), 1);
+			GameFacade.getInstance().removeProxy(aName);
 		}
 		
 		
@@ -571,7 +581,15 @@ package game.model.service
 			//GameFacade.getInstance().mainStage.removeEventListener(MouseEvent.RIGHT_CLICK, nullRightClick);
 			actionTimer.removeEventListener(TimerEvent.TIMER, onActionTimer);
 			sendNotification(SharedConst.REMOVE_LISTENERS);
-			trace(animals.length);
+			Utils.changeDaytime();
+			
+			if (SharedConst.TRIBE_SIZE > 1)
+			{
+				SharedConst.CURRENT_LEVEL++;
+				sendNotification(SharedConst.VIEW_MENU);
+			}
+			
+			//trace(animals.length);
 		}
 		
 		public function getGroupSize():int 

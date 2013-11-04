@@ -5,6 +5,7 @@ package game.common
 		
 		public static const GAME_SERVICE:String = "GameService";
 		public static const MAP_SERVICE:String = "MapService";
+		public static const MENU_SERVICE:String = "MenuService";
 		
 		public static const CMD_CREATE_HUMAN:String = "cmd_create_human";
 		public static const CMD_CREATE_ANIMAL:String = "cmd_create_animal";
@@ -14,6 +15,7 @@ package game.common
 		public static const CMD_BORN_CLICK:String = "cmd_born_click";
 		public static const CMD_SACRIFICE_CLICK:String = "cmd_sacrifice_click";
 		public static const CMD_FINISH_LEVEL:String = "cmd_finish_level";
+		public static const CMD_START_LEVEL:String = "cmd_start_level";
 		
 		public static const SHOW_HELP_LEFT:String = "show_help_left";
 		public static const SHOW_HELP_RIGHT:String = "show_help_right";
@@ -30,6 +32,7 @@ package game.common
 		
 		public static const REMOVE_LISTENERS:String = "remove_listeners";
 		public static const REMOVE_ANIMAL:String = "remove_animal";
+		public static const VIEW_MENU:String = "view_menu";
 		
 		
 		
@@ -37,7 +40,9 @@ package game.common
 		
 		public static const LEVELTYPE_SCROLLER:String = "LEVELTYPE_SCROLLER";
 		
-		public static const CURRENT_LEVEL:int = 1;
+		public static var CURRENT_LEVEL:int = 1;
+		public static var CURRENT_DAYTIME:String = "day";
+		public static var LAND_TYPE:int = 1;
 		public static var MAP_SPEED:int = 3;
 		public static var SPEND_DISTANCE:int = 0;
 		public static var SHAMAN_LEVEL:int = 1;
@@ -62,6 +67,8 @@ package game.common
 		
 		public static var CURRENT_STATE:String = "";
 		
+		public static var LAST_LEVEL:String = "";
+		
 		public static const LEVELS_ARRAY:Array = [
 													[	
 														{ distance:10, objects:[ "bridge2"], safeZones:[[210, 320], [490, 590]], long:200 },
@@ -73,10 +80,10 @@ package game.common
 														{ distance:1200, objects:["animal"], type:"crocodyle", position:350 },
 														{ distance:1250, objects:["animal"], type:"crocodyle", position:600 },
 														{ distance:1600, objects:["animal"],type:"antelope",position:320},*/
-													],
+													],[],[],[],[],[]
 													
 													]
-		
+													
 		public static const isSound:Boolean = true;
 		
 		

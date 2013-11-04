@@ -25,11 +25,26 @@ package game.model.service
 		public function MapService(pname:String,data:Object):void 
 		{
 			proxyName = pname;// SharedConst.MAP_SERVICE;
-			switch(data["level"])
+			switch(SharedConst.LAND_TYPE)
 			{
 				case 1:
 					currentMapGraphic = new Land1();
 					currentMapGraphic2 = new Land1();
+					
+					break;
+				case 2:
+					currentMapGraphic = new Land2();
+					currentMapGraphic2 = new Land2();
+					
+					break;
+				case 3:
+					currentMapGraphic = new Land3();
+					currentMapGraphic2 = new Land3();
+					
+					break;
+				case 4:
+					currentMapGraphic = new Land4();
+					currentMapGraphic2 = new Land4();
 					
 					break;
 					
@@ -76,15 +91,15 @@ package game.model.service
 					break;
 				case "bridge2":
 					newObject = new Bridge2;
+					newObject.gotoAndStop(SharedConst.LAND_TYPE);
 					break;
 				case "bridge1":
 					newObject = new Bridge1;
+					newObject.gotoAndStop(SharedConst.LAND_TYPE);
 					break;
 				case "bridge4":
 					newObject = new Bridge4;
-					break;
-				default:
-					needToAdd = false;
+					newObject.gotoAndStop(SharedConst.LAND_TYPE);
 					break;
 				case "normalCorpse":
 					newObject = new Human;
@@ -96,6 +111,10 @@ package game.model.service
 					newObject.gotoAndStop(3);
 					
 					break;
+				default:
+					needToAdd = false;
+					break;
+				
 			}
 			if (needToAdd)
 			{

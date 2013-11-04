@@ -55,6 +55,7 @@ package game.view.mediators
 					
 					break;
 				case SharedConst.REMOVE_LISTENERS:
+					human.removeAnimal();
 					GameFacade.getInstance().removeMediator(mediatorName);
 					
 					break;

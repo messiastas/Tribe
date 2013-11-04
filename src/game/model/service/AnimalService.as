@@ -203,7 +203,7 @@ package game.model.service
 				currentPoint.y -= Math.cos(currentAngle * 0.0175) * currentSpeed;
 			}
 			
-			if (currentPoint.y < 0)
+			if (currentPoint.y < -100)
 			{
 				removeAnimal();
 			}

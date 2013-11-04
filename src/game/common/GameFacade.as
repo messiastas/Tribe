@@ -45,6 +45,7 @@ package game.common
 			registerCommand(SharedConst.CMD_BORN_CLICK, bornCommand);
 			registerCommand(SharedConst.CMD_SACRIFICE_CLICK, sacrificeCommand);
 			registerCommand(SharedConst.CMD_FINISH_LEVEL, finishCommand);
+			registerCommand(SharedConst.CMD_START_LEVEL, startCommand);
 		}
 		
 		public function startup(newStage:Stage):void 

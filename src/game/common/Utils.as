@@ -43,6 +43,17 @@ package game.common
 			return (x >= xStart && x <= xEnd);
 		}
 		
+		public static function changeDaytime():void 
+		{
+			if (SharedConst.CURRENT_DAYTIME == "day")
+			{
+				SharedConst.CURRENT_DAYTIME = "night"
+			} else 
+			{
+				SharedConst.CURRENT_DAYTIME = "day"
+			}
+		}
+		
 		
 		
 	}
