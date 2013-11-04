@@ -28,6 +28,7 @@ package game.view.mediators
 				SharedConst.CHANGE_PEOPLE,
 				SharedConst.CHANGE_SUPPLIES,
 				SharedConst.REMOVE_LISTENERS,
+				SharedConst.CMD_START_LEVEL,
 			];
 			super( NAME, new InterfaceView(NAME) );
 			panel.addEventListener("leftClick", onClick);
@@ -40,6 +41,8 @@ package game.view.mediators
 			panel.addEventListener("onSacrificeClick", onSacrificeClick);
 			
 			panel.addEventListener("finishLevel", onFinishLevel);
+			
+			panel.clickAreaInvisible();
 		}
 		
 		private function onWeaponClick(e:Event):void 
@@ -106,8 +109,12 @@ package game.view.mediators
 					panel.changeSupplies()
 					
 					break;
+				case SharedConst.CMD_START_LEVEL:
+					panel.clickAreaVisible();
+					break;
 				case SharedConst.REMOVE_LISTENERS:
-					panel.removeEventListener("leftClick", onClick);
+					panel.clickAreaInvisible();
+					/*panel.removeEventListener("leftClick", onClick);
 					panel.removeEventListener("rightClick", onClick);
 					
 					panel.removeEventListener("onWeaponClick", onWeaponClick);
@@ -118,7 +125,7 @@ package game.view.mediators
 					
 					panel.removeEventListener("finishLevel", onFinishLevel);
 					panel.removeListeners();
-					GameFacade.getInstance().removeMediator(mediatorName);
+					GameFacade.getInstance().removeMediator(mediatorName);*/
 					break;
 				
 			}

@@ -1,6 +1,7 @@
 package game.common 
 {
 	
+	import flash.display.MovieClip;
 	import org.puremvc.as3.patterns.facade.Facade;
 	import org.puremvc.as3.interfaces.IFacade;
 	import flash.display.Stage;
@@ -28,6 +29,9 @@ package game.common
 		
 		private static var _iteration:Number = 0;
 		
+		private static var interfaceClip:MovieClip = new MovieClip;
+		private static var otherClip:MovieClip = new MovieClip;
+		
 		public function GameFacade() 
 		{
 			if (_instance != null) throw new Error("GameFacade is obviously also... Singleton.");
@@ -51,7 +55,10 @@ package game.common
 		public function startup(newStage:Stage):void 
 		{
 			mainStage = newStage;
-			sendNotification(CMD_STARTUP,null);
+			mainStage.addChild(otherClip);
+			mainStage.addChild(interfaceClip);
+			sendNotification(CMD_STARTUP, null);
+			sendNotification(SharedConst.CMD_CREATE_INTERFACE, null);
 		}
 		
 		
@@ -90,6 +97,16 @@ package game.common
 		public function set iteration(value:Number):void 
 		{
 			_iteration = value;
+		}
+		
+		public function get InterfaceClip():MovieClip
+		{
+			return interfaceClip;
+		}
+		
+		public function get OtherClip():MovieClip
+		{
+			return otherClip;
 		}
 	}
 }

@@ -14,6 +14,7 @@ package game.view.components
 	import game.common.GameFacade
 	import game.common.interfaces.*;
 	import game.common.SharedConst;
+	import game.common.Utils;
 	import flash.system.*;
 	
 	/**
@@ -29,6 +30,7 @@ package game.view.components
 		private var helpTimer:Timer = new Timer(1000);
 		
 		
+		
 		public function MenuView(hName:String) 
 		{
 			init();
@@ -36,7 +38,7 @@ package game.view.components
 		
 		public function init():void {
 			
-			GameFacade.getInstance().mainStage.addChild(movie);
+			GameFacade.getInstance().OtherClip.addChild(movie);
 			//var body:Rectangle = new Rectangle(0, 0, 20, 20);
 			body = new LevelMap();
 			movie.addChild(body);
@@ -65,12 +67,15 @@ package game.view.components
 			body.bWait.alpha = .5;
 			body.bWait.addEventListener(MouseEvent.CLICK, onWait);
 			makeInactive(body.bWait);
-			body.bWait.visible = false;
+			body.bWait.alpha = 0;
 		}
 		
 		private function randomView(what:MovieClip,isActive:Boolean):void 
 		{
-			what.gotoAndStop(1 + Math.round(Math.random() * (body.level0.totalFrames - 1)))
+			var frame:int = Math.round(Math.random() * (SharedConst.LEVELS_IN_GAME.length-1))
+			what.gotoAndStop(SharedConst.LEVELS_IN_GAME[frame]);
+			SharedConst.LEVELS_IN_GAME.splice(frame, 1);
+			//what.gotoAndStop(1 + Math.round(Math.random() * (body.level0.totalFrames - 1)))
 			what.addEventListener(MouseEvent.CLICK, onLevelClick);
 			what.mouseChildren = false;
 			if (isActive)
@@ -84,14 +89,27 @@ package game.view.components
 		
 		private function onWait(e:MouseEvent):void 
 		{
-			
-			//SharedCons
+			SharedConst.SUPPLIES -= 10;
+			Utils.changeDaytime();
+			checkBG();
+			makeInactive(body.bWait);
+		}
+		
+		private function checkBG():void 
+		{
+			if (SharedConst.CURRENT_DAYTIME == "day")
+			{
+				body.bg.gotoAndStop(1);
+			} else 
+			{
+				body.bg.gotoAndStop(2);
+			}
 		}
 		
 		private function onStartGame(e:MouseEvent):void 
 		{
 			trace("LAND_TYPE:", e.target.currentFrame);
-			GameFacade.getInstance().mainStage.removeChild(movie);
+			GameFacade.getInstance().OtherClip.removeChild(movie);
 			SharedConst.LAND_TYPE = e.target.currentFrame;
 			
 			dispatchEvent(new Event("startGame"))
@@ -100,25 +118,27 @@ package game.view.components
 		
 		private function onLevelClick(e:MouseEvent):void 
 		{
-			GameFacade.getInstance().mainStage.removeChild(movie);
+			GameFacade.getInstance().OtherClip.removeChild(movie);
 			SharedConst.LAND_TYPE = e.target.currentFrame;
 			trace("level",(e.target as MovieClip).name.split("level")[1]);
-			SharedConst.LAST_LEVEL = (e.target as MovieClip).name.split("level")[1]
+			SharedConst.LAST_LEVEL = (e.target as MovieClip).name.split("level")[1];
+			SharedConst.CURRENT_STATE = "";
 			dispatchEvent(new Event("startGame"))
 		}
 		
 		public function viewMenu():void 
 		{
-			GameFacade.getInstance().mainStage.addChild(movie);
-			if (SharedConst.CURRENT_DAYTIME == "day")
+			GameFacade.getInstance().OtherClip.addChild(movie);
+			checkBG();
+			//makeActive(body.bWait);
+			SharedConst.SPEND_DISTANCE = 0;
+			if (SharedConst.SUPPLIES > 10)
 			{
-				body.bg.gotoAndStop(1);
+				makeActive(body.bWait);
 			} else 
 			{
-				body.bg.gotoAndStop(2);
+				makeInactive(body.bWait);
 			}
-			//makeActive(body.bWait);
-			SharedConst.SPEND_DISTANCE = 0
 			switch(SharedConst.LAST_LEVEL)
 			{
 				case "0":
@@ -183,8 +203,13 @@ package game.view.components
 					makeInactive(body.level31);
 					makeInactive(body.level30);
 					break;
-				case "4":
-					
+				case "40":
+					makePast(body.level40);
+					makeInactive(body.level41);
+					break;
+				case "41":
+					makePast(body.level41);
+					makeInactive(body.level40);
 					break;
 			}
 		}
@@ -208,12 +233,14 @@ package game.view.components
 		private function makeActive(what:*):void 
 		{
 			what.mouseEnabled = true;
-			what.buttonMode = true;
 			try {
+				
+				what.buttonMode = true;
 				what.bright.visible = false;
 				what.past.visible = false;
 			} catch (er:Error)
 			{
+				what.mouseEnabled = true;
 				what.alpha = 1;
 			}
 		}

@@ -72,15 +72,15 @@ package game.model.service
 		public function init():void {
 			//proxyName = SharedConst.GAME_SERVICE;
 			GameFacade.getInstance().mainStage.focus = GameFacade.getInstance().mainStage;
-			GameFacade.getInstance().mainStage.addChild(mcMap);
-			GameFacade.getInstance().mainStage.addChild(mcCreatures);
-			GameFacade.getInstance().mainStage.addChild(mcInterface);
+			GameFacade.getInstance().OtherClip.addChild(mcMap);
+			GameFacade.getInstance().OtherClip.addChild(mcCreatures);
+			//GameFacade.getInstance().mainStage.addChild(mcInterface);
 			actionTimer.addEventListener(TimerEvent.TIMER, onActionTimer);
 			createMap();
 			
 			createHumans();
 			createGroups(currentGroups);
-			createInterface();
+			//createInterface();
 			startLevel();
 			//startIntro();
 			
@@ -153,7 +153,16 @@ package game.model.service
 			//if (SharedConst.CURRENT_LEVEL % 2 != 0)
 			currentLevelType = SharedConst.LEVELTYPE_SCROLLER;
 				
-			currentLevelArray = SharedConst.LEVELS_ARRAY[SharedConst.CURRENT_LEVEL-1];
+			currentLevelArray = SharedConst.LEVELS_ARRAY[SharedConst.CURRENT_LEVEL - 1];
+			
+			while (currentLevelArray.length <SharedConst.MAP_DISTANCE/(SharedConst.LANDS_COEF_ARRAY[SharedConst.CURRENT_LEVEL - 1].mindistance+20))
+			{
+				
+				createRandomObstacle(SharedConst.LAND_TYPE-1);
+				
+				
+			}
+			
 			actionTimer.start();
 			
 			//GameFacade.getInstance().mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPush);
@@ -227,14 +236,6 @@ package game.model.service
 				}
 			}
 			scrollerAction();
-			/*switch (currentLevelType)
-			{
-				case SharedConst.LEVELTYPE_SCROLLER:
-					scrollerAction();
-					
-					break;
-			}
-			*/
 			i = 0;
 			while (i < animals.length)
 			{
@@ -274,12 +275,12 @@ package game.model.service
 			{
 				createObject(currentLevelArray[0])
 				currentLevelArray.shift();
-			} else if (currentLevelArray.length == 0)
+			} /*else if (currentLevelArray.length == 0)
 			{
 				createRandomObstacle();
 				
 				
-			}
+			}*/
 			
 			if (obstacles.length>0 && obstacles[0].distance <= SharedConst.SPEND_DISTANCE)
 			{
@@ -318,30 +319,36 @@ package game.model.service
 			}
 		}
 		
-		private function createRandomObstacle():void 
+		private function createRandomObstacle(landType:int = 1):void 
 		{
 			var types:Array = ["river", "animal"];
 				var bridges:Array = [1, 2];
 				//var animals:Array = ["antelope", "crocodyle"];
+				if (currentLevelArray.length > 0)
+				{
+					var distance:int = lastObjectLong + SharedConst.LANDS_COEF_ARRAY[landType].mindistance + Math.random()*SharedConst.LANDS_COEF_ARRAY[landType].maxdistance+currentLevelArray[currentLevelArray.length-1].distance;
+				} else 
+				{
+					distance = 10;
+				}
 				
-				var distance:int = lastObjectLong + 50 + Math.random()*150+SharedConst.SPEND_DISTANCE;
 				var objects:Array;
 				var type:String = "";
 				var safeZones:Array = [];
 				var position:int = 0;
 				var long:int = 200;
-				if (Math.random() > .2)//animal
+				if (Math.random() > SharedConst.LANDS_COEF_ARRAY[landType].creatureChance)//animal
 				{
 					lastObjectLong = 0;
 					objects = ["animal"]
 					position = 100 + Math.random() * (SharedConst.STAGE_WIDTH - 200);
-					if (Math.random() > .8)//antelope
+					if (Math.random() > SharedConst.LANDS_COEF_ARRAY[landType].hunt)//antelope
 					{
 						type = "antelope"
-					} else if (Math.random() > .6)//strangers
+					} else if (Math.random() > SharedConst.LANDS_COEF_ARRAY[landType].strangers)//strangers
 					{
 						type = "strangers"
-					} else if (Math.random() > .4)//berry
+					} else if (Math.random() > SharedConst.LANDS_COEF_ARRAY[landType].plant)//berry
 					{
 						type = "berry"
 					}else //crocodyle
@@ -352,11 +359,11 @@ package game.model.service
 				{
 					long = 200;
 					
-					if (Math.random() > 0.65)//1
+					if (Math.random() > 0.66)//1
 					{
 						objects = [ "bridge1"];
 						safeZones = [[300, 500]]
-					} else if (Math.random() > 0.35)//4
+					} else if (Math.random() > 0.33)//4
 					{
 						objects = [ "bridge4"];
 						safeZones = [[120, 200], [285, 360],[435, 520], [600, 680]]
@@ -585,8 +592,10 @@ package game.model.service
 			
 			if (SharedConst.TRIBE_SIZE > 1)
 			{
+				GameFacade.getInstance().removeProxy(SharedConst.MAP_SERVICE);
 				SharedConst.CURRENT_LEVEL++;
 				sendNotification(SharedConst.VIEW_MENU);
+				GameFacade.getInstance().removeProxy(SharedConst.GAME_SERVICE);
 			}
 			
 			//trace(animals.length);

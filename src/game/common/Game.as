@@ -52,6 +52,7 @@ package game.common
 			introClip = null;
 			GameFacade.getInstance().mainStage.frameRate = 60;
 			trace("Game start");
+			
 			GameFacade.getInstance().startup(mStage as Stage);
 			/*createHumans();
 			createGroups(currentGroups);

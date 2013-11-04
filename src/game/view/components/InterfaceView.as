@@ -1,5 +1,6 @@
 package game.view.components 
 {
+	import adobe.utils.CustomActions;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.KeyboardEvent;
@@ -36,7 +37,7 @@ package game.view.components
 		
 		public function init():void {
 			
-			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getInterfaceClip().addChild(movie);
+			GameFacade.getInstance().InterfaceClip.addChild(movie);
 			//var body:Rectangle = new Rectangle(0, 0, 20, 20);
 			body = new interfaceView();
 			movie.addChild(body);
@@ -63,6 +64,9 @@ package game.view.components
 			helpTimer.addEventListener(TimerEvent.TIMER, refreshTime);
 			helpTimer.start();
 			changePeople();
+			
+			body.nightMask.mouseEnabled = false;
+			checkNight();
 		}
 		
 		private function onKeyDown(e:KeyboardEvent):void 
@@ -98,26 +102,31 @@ package game.view.components
 		private function onWeaponClick(e:MouseEvent):void 
 		{
 			dispatchEvent(new Event("onWeaponClick"))
+			checkFire(false);
 		}
 		
 		private function onTorchClick(e:MouseEvent):void 
 		{
+			checkFire(true);
 			dispatchEvent(new Event("onTorchClick"))
 		}
 		
 		private function onHandsClick(e:MouseEvent):void 
 		{
 			dispatchEvent(new Event("onHandsClick"))
+			checkFire(false);
 		}
 		
 		private function onBornClick(e:MouseEvent):void 
 		{
 			dispatchEvent(new Event("onBornClick"))
+			checkFire(false);
 		}
 		
 		private function onSacrificeClick(e:MouseEvent):void 
 		{
 			dispatchEvent(new Event("onSacrificeClick"))
+			checkFire(false);
 		}
 		
 		private function onLeftClick(e:MouseEvent):void 
@@ -176,6 +185,8 @@ package game.view.components
 			body.people.text = String(SharedConst.TRIBE_SIZE);
 			body.shamanLevel.text = String(SharedConst.SHAMAN_LEVEL);
 			checkShamanLevel();
+			if (SharedConst.CURRENT_STATE == "torch")
+				checkFire(true);
 		}
 		
 		public function changeSupplies():void 
@@ -220,6 +231,45 @@ package game.view.components
 			body.bSacrifice.removeEventListener(MouseEvent.CLICK, onSacrificeClick);
 			helpTimer.removeEventListener(TimerEvent.TIMER, refreshTime);
 			helpTimer.stop();
+		}
+		
+		public function clickAreaInvisible():void 
+		{
+			body.bRegroup.visible = false;
+			body.nightMask.visible = false;
+		}
+		
+		public function clickAreaVisible():void 
+		{
+			body.bRegroup.visible = true;
+			checkNight();
+		}
+		
+		private function checkNight():void 
+		{
+			if (SharedConst.CURRENT_DAYTIME == "day")
+			{
+				body.nightMask.visible = false;
+			} else 
+			{
+				body.nightMask.visible = true;
+			}
+		}
+		private function checkFire(isFire:Boolean):void 
+		{
+			if (SharedConst.CURRENT_DAYTIME == "night")
+			{
+				if (!isFire)
+				{
+					body.nightMask.gotoAndStop(1);
+				} else 
+				{
+					var frame:int = 1 + int(SharedConst.TRIBE_SIZE / 10);
+					if (frame > 5)
+						frame = 5;
+					body.nightMask.gotoAndStop(frame);
+				}
+			}
 		}
 		
 		
