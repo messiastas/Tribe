@@ -32,7 +32,7 @@ package game.view.mediators
 				SharedConst.REMOVE_ANIMAL + humanName,
 				SharedConst.REMOVE_LISTENERS,
 			];
-			super( NAME + humanName, new AnimalView(note.type) );
+			super( NAME + humanName, new AnimalView(note.type,note.size) );
 			//trace("MEDIATOR", humanName);
 		}
 		

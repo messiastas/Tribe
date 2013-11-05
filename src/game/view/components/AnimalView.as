@@ -22,11 +22,13 @@ package game.view.components
 		private var human:Sprite = new Sprite;
 		private var body:MovieClip;
 		private var humanName:String = "";
+		private var size:int = 5;
 		
 		
-		public function AnimalView(hName:String) 
+		public function AnimalView(hName:String,_size:int = 5) 
 		{
 			humanName = hName;
+			size = _size
 			init();
 		}
 		
@@ -37,19 +39,62 @@ package game.view.components
 			switch (humanName)
 			{
 				case "antelope":
-					body = new Antelope();
+					if (SharedConst.LAND_TYPE == 4)
+					{
+						body = new Camel();
+					} else 
+					{
+						body = new Antelope();
+					}
 					break;
 				case "crocodyle":
-					body = new Crocodyle();
+					if (SharedConst.LAND_TYPE == 2)
+					{
+						body = new Bear();
+					} else if (SharedConst.LAND_TYPE == 1 || SharedConst.LAND_TYPE == 3)
+					{
+						body = new Crocodyle();
+					} else 
+					{
+						body = new Crocodyle();
+					}
+					
 					break;
 				case "strangers":
-					body = new Strangers();
+					//trace(size)
+					if (size == 5)
+					{
+						
+						body = new Strangers();
+					} else if(size == 10)
+					{
+						body = new Strangers10();
+					} else 
+					{
+						body = new Strangers();
+					}
 					break;
 				case "berry":
-					body = new Berry();
+					if (SharedConst.LAND_TYPE == 4)
+					{
+						body = new Bananas();
+					} else 
+					{
+						body = new Berry();
+					}
+					break;
+				case "giant":
+					body = new Pterodactyl();
 					break;
 				default:
-					body = new Antelope();
+					if (SharedConst.LAND_TYPE == 4)
+					{
+						body = new Camel();
+					} else 
+					{
+						body = new Antelope();
+					}
+					
 					break;
 			}
 			

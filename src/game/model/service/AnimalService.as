@@ -21,6 +21,10 @@ package game.model.service
 		private var needToStop:Boolean = true;
 		protected var type:String;
 		
+		protected var size:int = 5;
+		
+		private var giantStep:int = 0;
+		
 		
 		
 		
@@ -29,13 +33,22 @@ package game.model.service
 		{
 			super(data);
 			type = data.type;
+			if (type == "giant")
+			{
+				trace("GIANT CREATE");
+			}
+			size = data.size;
 		}
 		override public function makeStep():void 
 		{
 			//trace("ANIMAL STEP",humanName);
 			currentPoint.y -= SharedConst.MAP_SPEED;
+			if (type == "giant")
+			{
+				giantStep -= SharedConst.MAP_SPEED*2;
+			}
 			
-			sendNotification(SharedConst.ACTION_MOVE_HUMAN + humanName, { "newX": currentPoint.x, "newY": currentPoint.y } );
+			sendNotification(SharedConst.ACTION_MOVE_HUMAN + humanName, { "newX": currentPoint.x, "newY": currentPoint.y+giantStep } );
 			if (Math.abs(currentPoint.y - SharedConst.TRIBE_VERTICAL_POSITION*2)<SharedConst.MAP_SPEED)
 			{
 				switch(type)
@@ -122,13 +135,17 @@ package game.model.service
 						{
 							
 							points = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupPoints();
-							for each(point in points)
+							if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() <= 25)
 							{
-								if (Math.abs(point - currentPoint.x) <= 50 && (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() <= 25)
+								for each(point in points)
 								{
-									(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(point);
+									if (Math.abs(point - currentPoint.x) <= 50 )
+									{
+										(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(point);
+									}
 								}
 							}
+							
 						} else 
 						{
 							//trace("Crocodyle SCARED");
@@ -168,28 +185,37 @@ package game.model.service
 						{
 							if (Math.abs(point - currentPoint.x) <= 50 )
 							{
-								if ( (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() >= 5)
+								if ( (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() >= size)
 								{
 									if (SharedConst.SUPPLIES > 0 && SharedConst.CURRENT_STATE != "weapon")
 									{
-										trace("GO WITH TRIBE")
+										trace("GO WITH TRIBE",size)
 										sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "goWithTribe"  } );
-										(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).addToTribe(5);
+										(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).addToTribe(size);
 										break;
 									} else 
 									{
-										trace("EAT STRANGERS")
-										SharedConst.SUPPLIES += 5;
+										trace("EAT STRANGERS",size)
+										SharedConst.SUPPLIES += size;
 										sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
 									}
 								} else {
 									(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(point);
-									trace("KILL_GROUP")
+									trace("KILL_GROUP",size)
 								}
 								
 								
 								break;
 							}
+						}
+						break;
+					case "giant":
+						trace("GIANT CHECK");
+						
+						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() >= 12 || SharedConst.CURRENT_STATE == "torch")
+						{
+							points = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupPoints();
+							(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(points[Math.round(Math.random()*(points.length-1))]);
 						}
 						break;
 					default:

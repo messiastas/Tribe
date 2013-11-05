@@ -337,33 +337,42 @@ package game.model.service
 				var safeZones:Array = [];
 				var position:int = 0;
 				var long:int = 200;
+				var size:int = 5;
 				if (Math.random() > SharedConst.LANDS_COEF_ARRAY[landType].creatureChance)//animal
 				{
 					lastObjectLong = 0;
 					objects = ["animal"]
 					position = 100 + Math.random() * (SharedConst.STAGE_WIDTH - 200);
-					if (Math.random() > SharedConst.LANDS_COEF_ARRAY[landType].hunt)//antelope
+					var animalRandom:Number = Math.random();
+					if (animalRandom > SharedConst.LANDS_COEF_ARRAY[landType].hunt)//antelope
 					{
 						type = "antelope"
-					} else if (Math.random() > SharedConst.LANDS_COEF_ARRAY[landType].strangers)//strangers
+					} else if (animalRandom > SharedConst.LANDS_COEF_ARRAY[landType].strangers)//strangers
 					{
 						type = "strangers"
-					} else if (Math.random() > SharedConst.LANDS_COEF_ARRAY[landType].plant)//berry
+						if (animalRandom > .7)
+							size = 10;
+					} else if (animalRandom > SharedConst.LANDS_COEF_ARRAY[landType].plant)//berry
 					{
 						type = "berry"
-					}else //crocodyle
+					}else if(animalRandom > SharedConst.LANDS_COEF_ARRAY[landType].monster)//crocodyle
 					{
 						type = "crocodyle"
+					}else //giant
+					{
+						type = "giant"
+						position = (SharedConst.STAGE_WIDTH/2);
+						trace("GIANT HERE");
 					}
 				} else //river
 				{
 					long = 200;
-					
-					if (Math.random() > 0.66)//1
+					animalRandom = Math.random();
+					if (animalRandom > 0.66)//1
 					{
 						objects = [ "bridge1"];
 						safeZones = [[300, 500]]
-					} else if (Math.random() > 0.33)//4
+					} else if (animalRandom > 0.33)//4
 					{
 						objects = [ "bridge4"];
 						safeZones = [[120, 200], [285, 360],[435, 520], [600, 680]]
@@ -374,7 +383,7 @@ package game.model.service
 					}
 					lastObjectLong = long;
 				}
-				currentLevelArray.push({"distance":distance,"objects":objects,"type":type,"safeZones":safeZones,"position":position,"long":long})
+				currentLevelArray.push({"distance":distance,"objects":objects,"type":type,"size":size,"safeZones":safeZones,"position":position,"long":long})
 		}
 		
 		private function makeDead(humanName:String,hNum:int,death:String=""):Boolean 
@@ -395,7 +404,7 @@ package game.model.service
 		private function checkTribe(needShaman:Boolean):void 
 		{
 			SharedConst.TRIBE_SIZE = humans.length;
-			sendNotification(SharedConst.CHANGE_PEOPLE );
+			
 			if (humans.length > 0)
 			{
 				
@@ -407,10 +416,11 @@ package game.model.service
 				{
 					
 				}
+				sendNotification(SharedConst.CHANGE_PEOPLE );
 				//createGroups(currentGroups);
 			} else 
 			{
-				
+				sendNotification(SharedConst.CHANGE_PEOPLE );
 				finishLevel();
 			}
 			
@@ -433,7 +443,7 @@ package game.model.service
 				{
 					var aname:String = levelObject.type + String(lastAnimal)
 					lastAnimal++;
-					sendNotification(SharedConst.CMD_CREATE_ANIMAL, { name:aname, coord:new Point(levelObject.position, SharedConst.STAGE_HEIGHT), type: levelObject.type} );
+					sendNotification(SharedConst.CMD_CREATE_ANIMAL, { name:aname, coord:new Point(levelObject.position, SharedConst.STAGE_HEIGHT), type: levelObject.type, size:levelObject.size} );
 					animals.push(aname);
 				}
 				
@@ -529,7 +539,8 @@ package game.model.service
 			var num:int = points.indexOf(what);
 			for each(var hName:String in humansGroup[num])
 			{
-				checkTribe(makeDead(hName,humans.indexOf(hName),"bloodyCorpse"))
+				if(humans.indexOf(hName)>=0)
+					checkTribe(makeDead(hName, humans.indexOf(hName), "bloodyCorpse"));
 			}
 			onLeftClick(null);
 			//createGroups(currentGroups);

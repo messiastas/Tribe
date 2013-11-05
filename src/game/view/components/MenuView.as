@@ -184,7 +184,7 @@ package game.view.components
 					
 				case "30":
 					makeActive(body.level40);
-					makeActive(body.level41);
+					makeInactive(body.level41);
 					makePast(body.level30);
 					makeInactive(body.level31);
 					makeInactive(body.level32);
@@ -197,7 +197,7 @@ package game.view.components
 					makeInactive(body.level32);
 					break;
 				case "32":
-					makeActive(body.level40);
+					makeInactive(body.level40);
 					makeActive(body.level41);
 					makePast(body.level32);
 					makeInactive(body.level31);

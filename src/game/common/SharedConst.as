@@ -69,10 +69,10 @@ package game.common
 		
 		public static var LAST_LEVEL:String = "";
 		
-		public static const LANDS_COEF_ARRAY:Array = [	{mindistance:50,maxdistance:150,creatureChance:0.2,hunt:0.75,strangers:0.5,plant:0.25},
-													{mindistance:70,maxdistance:200,creatureChance:0.35,hunt:0.8,strangers:0.65,plant:0.4},
-													{mindistance:20,maxdistance:100,creatureChance:0.15,hunt:0.7,strangers:0.65,plant:0.35},
-													{mindistance:90,maxdistance:250,creatureChance:0.2,hunt:0.9,strangers:0.6,plant:0.5}
+		public static const LANDS_COEF_ARRAY:Array = [	{mindistance:50,maxdistance:150,creatureChance:0.2,hunt:0.75,strangers:0.5,plant:0.25,monster:0.05},
+													{mindistance:70,maxdistance:200,creatureChance:0.35,hunt:0.8,strangers:0.65,plant:0.4,monster:0.05},
+													{mindistance:20,maxdistance:100,creatureChance:0.15,hunt:0.7,strangers:0.65,plant:0.35,monster:0.05},
+													{mindistance:90,maxdistance:250,creatureChance:0.2,hunt:0.9,strangers:0.6,plant:0.5,monster:0.05}
 												];
 		
 		public static const LEVELS_ARRAY:Array = [
