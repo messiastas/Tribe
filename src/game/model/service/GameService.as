@@ -155,7 +155,7 @@ package game.model.service
 				
 			currentLevelArray = SharedConst.LEVELS_ARRAY[SharedConst.CURRENT_LEVEL - 1];
 			
-			while (currentLevelArray.length <SharedConst.MAP_DISTANCE/(SharedConst.LANDS_COEF_ARRAY[SharedConst.CURRENT_LEVEL - 1].mindistance+20))
+			while (currentLevelArray.length <SharedConst.MAP_DISTANCE/(SharedConst.LANDS_COEF_ARRAY[SharedConst.LAND_TYPE - 1].mindistance+20))
 			{
 				
 				createRandomObstacle(SharedConst.LAND_TYPE-1);
@@ -563,9 +563,9 @@ package game.model.service
 		
 		public function bornPeople():void 
 		{
-			if (SharedConst.SUPPLIES > 3)
+			if (SharedConst.SUPPLIES > 10)
 			{
-				SharedConst.SUPPLIES -= 3;
+				SharedConst.SUPPLIES -= 10;
 				addToTribe(5);
 				sendNotification(SharedConst.CHANGE_SUPPLIES);
 			}
@@ -575,7 +575,7 @@ package game.model.service
 		{
 			if (humans.length > 5)
 			{
-				SharedConst.SUPPLIES += 3;
+				SharedConst.SUPPLIES += 10;
 				
 				if((makeDead(humans[humans.length - 1], humans.length - 1, "bloodyCorpse")) ||
 				(makeDead(humans[0], 0, "bloodyCorpse")) ||
@@ -607,6 +607,9 @@ package game.model.service
 				SharedConst.CURRENT_LEVEL++;
 				sendNotification(SharedConst.VIEW_MENU);
 				GameFacade.getInstance().removeProxy(SharedConst.GAME_SERVICE);
+			} else 
+			{
+				sendNotification(SharedConst.GAME_OVER);
 			}
 			
 			//trace(animals.length);

@@ -29,6 +29,7 @@ package game.view.mediators
 				SharedConst.CHANGE_SUPPLIES,
 				SharedConst.REMOVE_LISTENERS,
 				SharedConst.CMD_START_LEVEL,
+				SharedConst.GAME_OVER,
 			];
 			super( NAME, new InterfaceView(NAME) );
 			panel.addEventListener("leftClick", onClick);
@@ -126,6 +127,9 @@ package game.view.mediators
 					panel.removeEventListener("finishLevel", onFinishLevel);
 					panel.removeListeners();
 					GameFacade.getInstance().removeMediator(mediatorName);*/
+					break;
+				case SharedConst.GAME_OVER:
+					panel.showGameOver();
 					break;
 				
 			}

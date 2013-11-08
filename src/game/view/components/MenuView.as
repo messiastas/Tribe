@@ -28,6 +28,7 @@ package game.view.components
 		private var humanName:String = "";
 		private var helpClip:MovieClip;
 		private var helpTimer:Timer = new Timer(1000);
+		private var story:FinalStory = new FinalStory;
 		
 		
 		
@@ -206,10 +207,12 @@ package game.view.components
 				case "40":
 					makePast(body.level40);
 					makeInactive(body.level41);
+					createFinalStory();
 					break;
 				case "41":
 					makePast(body.level41);
 					makeInactive(body.level40);
+					createFinalStory();
 					break;
 			}
 		}
@@ -262,12 +265,211 @@ package game.view.components
 			
 		}
 		
+		private function createFinalStory():void 
+		{
+			
+			GameFacade.getInstance().mainStage.addChild(story);
+			
+			trace("TRIBESIZE:", SharedConst.TRIBE_SIZE, ", FOOD:", SharedConst.SUPPLIES, ", SHAMAN:", SharedConst.SHAMAN_LEVEL, ", HUNTING:", SharedConst.SUCCEED_HUNTING, ", PLANTING:", SharedConst.SUCCEED_PLANTING, ", CANNIBALISM:", SharedConst.SUCCEED_CANNIBALISM, ", DIPLOMACY:", SharedConst.SUCCEED_DIPLOMACY);
+			
+			story.storyText.text = "";
+			
+			if (SharedConst.TRIBE_SIZE > 15)
+			{
+				addToStory(SharedConst.GAME_RESULTS.size[0]);
+				if (SharedConst.SUPPLIES > SharedConst.TRIBE_SIZE)
+				{
+					addToStory(SharedConst.GAME_RESULTS.food[0]);
+					storyShamanLevel(0);
+				} else 
+				{
+					addToStory(SharedConst.GAME_RESULTS.food[1]);
+					storyShamanLevel(1);
+				}
+			} else 
+			{
+				addToStory(SharedConst.GAME_RESULTS.size[1]);
+				if (SharedConst.SUPPLIES > SharedConst.TRIBE_SIZE)
+				{
+					addToStory(SharedConst.GAME_RESULTS.food[2]);
+					storyShamanLevel(0);
+				} else 
+				{
+					addToStory(SharedConst.GAME_RESULTS.food[3]);
+					storyShamanLevel(1);
+				}
+			}
+			
+			
+			
+		}
+		
+		private function storyShamanLevel(situation:int):void 
+		{
+			switch (situation)
+			{
+				case 0:
+					if (SharedConst.SHAMAN_LEVEL > 15)
+					{
+						addToStory(SharedConst.GAME_RESULTS.level[0]);
+						storyHunting(1);
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.level[2]);
+						storyHunting(3);
+					}
+					break;
+				case 1:
+					if (SharedConst.SHAMAN_LEVEL > 15)
+					{
+						addToStory(SharedConst.GAME_RESULTS.level[3]);
+						storyHunting(3);
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.level[1]);
+						storyHunting(2);
+					}
+					break;
+			}
+		}
+		
+		private function storyHunting(situation:int):void 
+		{
+			var huntToPlant:Number = SharedConst.SUCCEED_HUNTING / SharedConst.SUCCEED_PLANTING;
+			if (situation == 1 || situation == 3)
+			{
+				if (huntToPlant > 1.3)
+				{
+					addToStory(SharedConst.GAME_RESULTS.hunting[0]);
+					endStory(situation, "a");
+				} else if (huntToPlant < .7)
+				{
+					addToStory(SharedConst.GAME_RESULTS.hunting[1])
+					endStory(situation, "b");
+				} else 
+				{
+					addToStory(SharedConst.GAME_RESULTS.hunting[2])
+					endStory(situation, "c");
+				}
+			} else 
+			{
+				if (huntToPlant > 1.3)
+				{
+					addToStory(SharedConst.GAME_RESULTS.hunting[3])
+					endStory(situation, "a");
+				} else if (huntToPlant < .7)
+				{
+					addToStory(SharedConst.GAME_RESULTS.hunting[4])
+					endStory(situation, "b");
+				} else 
+				{
+					addToStory(SharedConst.GAME_RESULTS.hunting[5])
+					endStory(situation, "c");
+				}
+			}
+		}
+		
+		private function endStory(situation:int, hunting:String):void 
+		{
+			var cannToDip:Boolean = (SharedConst.SUCCEED_CANNIBALISM>1.5*SharedConst.SUCCEED_DIPLOMACY)
+			switch (String(String(situation)+hunting))
+			{
+				case "1a":
+					if (cannToDip)
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[0])
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[2])
+					}
+					break;
+				case "1b":
+					if (cannToDip)
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[1])
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[3])
+					}
+					break;
+				case "1c":
+					if (cannToDip)
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[1])
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[3])
+					}
+					break;
+				
+				case "3a":
+					if (cannToDip)
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[4])
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[7])
+					}
+					break;
+				case "3b":
+					if (cannToDip)
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[5])
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[8])
+					}
+					break;
+				case "3c":
+					if (cannToDip)
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[6])
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[9])
+					}
+					break;
+					
+				case "2a":
+					if (cannToDip)
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[10])
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[13])
+					}
+					break;
+				case "2b":
+					if (cannToDip)
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[11])
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[14])
+					}
+					break;
+				case "2c":
+					if (cannToDip)
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[12])
+					} else 
+					{
+						addToStory(SharedConst.GAME_RESULTS.cannibalism[15])
+					}
+					break;
+			}
+		}
 		
 		
 		
 		
 		
 		
+		private function addToStory(s:String):void 
+		{
+			story.storyText.text += "\n \n";
+			story.storyText.text += s;
+		}
 		
 	}
 

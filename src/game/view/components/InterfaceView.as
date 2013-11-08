@@ -237,12 +237,19 @@ package game.view.components
 		{
 			body.bRegroup.visible = false;
 			body.nightMask.visible = false;
+			
+			body.bWeapon.visible = false;
+			body.bTorches.visible = false;
+			body.bBorn.visible = false;
+			body.bSacrifice.visible = false;
 		}
 		
 		public function clickAreaVisible():void 
 		{
 			body.bRegroup.visible = true;
 			checkNight();
+			checkShamanLevel();
+			onHandsClick(null);
 		}
 		
 		private function checkNight():void 
@@ -270,6 +277,29 @@ package game.view.components
 					body.nightMask.gotoAndStop(frame);
 				}
 			}
+		}
+		
+		public function showGameOver():void 
+		{
+			helpTimer.addEventListener(TimerEvent.TIMER, addGameOver);
+			helpTimer.start();
+		}
+		
+		private function addGameOver(e:TimerEvent):void 
+		{
+			helpTimer.removeEventListener(TimerEvent.TIMER, addGameOver);
+			helpTimer.stop();
+			
+			GameFacade.getInstance().mainStage.frameRate = 24;
+			var gameOverClip:GameOver = new GameOver;
+			GameFacade.getInstance().InterfaceClip.addChild(gameOverClip);
+			gameOverClip.gotoAndPlay(1);
+			gameOverClip.addEventListener(MouseEvent.CLICK, onGameOverClick);
+		}
+		
+		private function onGameOverClick(e:MouseEvent):void 
+		{
+			fscommand("quit");
 		}
 		
 		

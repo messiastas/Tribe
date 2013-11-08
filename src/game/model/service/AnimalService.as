@@ -33,10 +33,10 @@ package game.model.service
 		{
 			super(data);
 			type = data.type;
-			if (type == "giant")
+			/*if (type == "giant")
 			{
-				trace("GIANT CREATE");
-			}
+				//trace("GIANT CREATE");
+			}*/
 			size = data.size;
 		}
 		override public function makeStep():void 
@@ -106,6 +106,7 @@ package game.model.service
 						{
 							if (Math.abs(point - currentPoint.x) <= 40 && SharedConst.CURRENT_STATE=="weapon")
 							{
+								SharedConst.SUCCEED_HUNTING++;
 								SharedConst.SUPPLIES += 10;
 								sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
 								scared = false;
@@ -171,6 +172,7 @@ package game.model.service
 						{
 							if (Math.abs(point - currentPoint.x) <= 40 && SharedConst.CURRENT_STATE=="")
 							{
+								SharedConst.SUCCEED_PLANTING++;
 								SharedConst.SUPPLIES += 8;
 								sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
 								break;
@@ -189,19 +191,21 @@ package game.model.service
 								{
 									if (SharedConst.SUPPLIES > 0 && SharedConst.CURRENT_STATE != "weapon")
 									{
-										trace("GO WITH TRIBE",size)
+										//trace("GO WITH TRIBE", size)
+										SharedConst.SUCCEED_DIPLOMACY++;
 										sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "goWithTribe"  } );
 										(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).addToTribe(size);
 										break;
 									} else 
 									{
-										trace("EAT STRANGERS",size)
+										SharedConst.SUCCEED_CANNIBALISM++;
+										//trace("EAT STRANGERS",size)
 										SharedConst.SUPPLIES += size;
 										sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
 									}
 								} else {
 									(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(point);
-									trace("KILL_GROUP",size)
+									//trace("KILL_GROUP",size)
 								}
 								
 								
