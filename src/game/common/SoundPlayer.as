@@ -38,12 +38,12 @@ package game.common
 		public function playSound(sound:Sound):void {
 			if(SharedConst.isSound){
 				
-				if( goChannel!=null){
+				/*if( goChannel!=null){
 					goChannel.stop();
-				}
+				}*/
 				
 				goChannel = sound.play();
-				goChannel.addEventListener(Event.SOUND_COMPLETE,onComplete);
+				//goChannel.addEventListener(Event.SOUND_COMPLETE,onComplete);
 				//goChannel.soundTransform = new SoundTransform(.3,0)
 			}
 		}

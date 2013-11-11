@@ -67,6 +67,8 @@ package game.common
 		public static var CURRENT_DISPERSION:Number = 50;
 		public static var LAST_HUMAN_NAME:int = 0;
 		
+		public static var ON_POSITIONS:int = 0;
+		
 		public static var CURRENT_STATE:String = "";
 		
 		public static var LAST_LEVEL:String = "";
@@ -94,7 +96,7 @@ package game.common
 		
 		
 																								
-		public static const isSound:Boolean = true;
+		public static var isSound:Boolean = true;
 		public static var LEVELS_IN_GAME:Array = [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4];
 		
 		public static var SUCCEED_HUNTING:int = 0;

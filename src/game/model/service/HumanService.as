@@ -11,6 +11,7 @@ package game.model.service
 	import game.common.Utils;
 	import game.common.SharedConst;
 	import game.common.GameFacade;
+	import game.common.SoundPlayer;
 	import game.model.entity.*;
 	import flash.utils.getDefinitionByName;
 	import flash.system.ApplicationDomain;
@@ -72,9 +73,11 @@ package game.model.service
 				currentPoint.x += Math.sin(currentAngle *0.0175) * currentSpeed;
 				currentPoint.y -= Math.cos(currentAngle * 0.0175) * currentSpeed;
 				sendNotification(SharedConst.ACTION_MOVE_HUMAN + humanName, { "newX": currentPoint.x, "newY": currentPoint.y } );
+				
 				if (Utils.calculateDistance(currentPoint, wayPoint) < currentSpeed)
 				{
 					needToStop = true;
+					SharedConst.ON_POSITIONS++;
 				}
 			}
 		}

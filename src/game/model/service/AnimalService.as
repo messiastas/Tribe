@@ -10,6 +10,7 @@ package game.model.service
 	import game.model.entity.*;
 	import flash.utils.getDefinitionByName;
 	import flash.system.ApplicationDomain;
+	import game.common.SoundPlayer;
 	
 	/**
 	 * ...
@@ -24,6 +25,7 @@ package game.model.service
 		protected var size:int = 5;
 		
 		private var giantStep:int = 0;
+		
 		
 		
 		
@@ -51,48 +53,51 @@ package game.model.service
 			sendNotification(SharedConst.ACTION_MOVE_HUMAN + humanName, { "newX": currentPoint.x, "newY": currentPoint.y+giantStep } );
 			if (Math.abs(currentPoint.y - SharedConst.TRIBE_VERTICAL_POSITION*2)<SharedConst.MAP_SPEED)
 			{
-				switch(type)
+				if (needToStop)
 				{
-					case "antelope":
-						
-						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 10)
-						{
-							//trace("ANTELOPE SCARED");
-							needToStop = false;
-							if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
+					switch(type)
+					{
+						case "antelope":
+							
+							if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 10)
 							{
-								
-								currentAngle = 270;
-							}	else
-							{
-								sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"AntelopeGoright"})
-								currentAngle = 90;
+								//trace("ANTELOPE SCARED");
+								needToStop = false;
+								if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
+								{
+									
+									currentAngle = 270;
+								}	else
+								{
+									sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"AntelopeGoright"})
+									currentAngle = 90;
+								}
 							}
-						}
-						break;
-					case "crocodyle":
-						
-						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 25 || SharedConst.CURRENT_STATE=="torch")
-						{
-							//trace("Crocodyle SCARED");
-							needToStop = false;
-							SharedConst.SHAMAN_LEVEL++;
-							sendNotification(SharedConst.CHANGE_PEOPLE, { num:-1 } );
-							if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
+							break;
+						case "crocodyle":
+							
+							if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() > 25 || SharedConst.CURRENT_STATE=="torch")
 							{
-								
-								currentAngle = 270;
-								sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"CrocodyleGoleft"})
-							}	else
-							{
-								sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"CrocodyleGoright"})
-								currentAngle = 90;
+								//trace("Crocodyle SCARED");
+								needToStop = false;
+								SharedConst.SHAMAN_LEVEL++;
+								sendNotification(SharedConst.CHANGE_PEOPLE, { num: -1 } );
+								if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
+								{
+									
+									currentAngle = 270;
+									sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"CrocodyleGoleft"})
+								}	else
+								{
+									sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"CrocodyleGoright"})
+									currentAngle = 90;
+								}
 							}
-						}
-						break;
-					default:
-						//trace("SOMEONE SCARED");
-						break;
+							break;
+						default:
+							//trace("SOMEONE SCARED");
+							break;
+					}
 				}
 			} else if (Math.abs(currentPoint.y - SharedConst.TRIBE_VERTICAL_POSITION)<SharedConst.MAP_SPEED)
 			{
@@ -109,6 +114,7 @@ package game.model.service
 								SharedConst.SUCCEED_HUNTING++;
 								SharedConst.SUPPLIES += 10;
 								sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
+								SoundPlayer.getInstance().playSound(new BiteSound());
 								scared = false;
 								break;
 							} else 
@@ -143,6 +149,19 @@ package game.model.service
 									if (Math.abs(point - currentPoint.x) <= 50 )
 									{
 										(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(point);
+										var soundType:Number = Math.random();
+										if (soundType > .66)
+										{
+											SoundPlayer.getInstance().playSound(new GrowlSound1());
+										} else if (soundType > .33)
+										{
+											SoundPlayer.getInstance().playSound(new GrowlSound2());
+										} else 
+										{
+											SoundPlayer.getInstance().playSound(new GrowlSound3());
+										}
+										SoundPlayer.getInstance().playSound(new BiteSound());
+										break;
 									}
 								}
 							}
@@ -151,8 +170,8 @@ package game.model.service
 						{
 							//trace("Crocodyle SCARED");
 							needToStop = false;
-							SharedConst.SHAMAN_LEVEL++;
-							sendNotification(SharedConst.CHANGE_PEOPLE, { num:-1 } );
+							//SharedConst.SHAMAN_LEVEL++;
+							//sendNotification(SharedConst.CHANGE_PEOPLE, { num:-1 } );
 							if (currentPoint.x < SharedConst.STAGE_WIDTH / 2)
 							{
 								
@@ -175,6 +194,8 @@ package game.model.service
 								SharedConst.SUCCEED_PLANTING++;
 								SharedConst.SUPPLIES += 8;
 								sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
+								SoundPlayer.getInstance().playSound(new TreeSound());
+								SoundPlayer.getInstance().playSound(new BiteSound());
 								break;
 							} 
 						}
@@ -195,6 +216,7 @@ package game.model.service
 										SharedConst.SUCCEED_DIPLOMACY++;
 										sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "goWithTribe"  } );
 										(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).addToTribe(size);
+										SoundPlayer.getInstance().playSound(new DrumSound());
 										break;
 									} else 
 									{
@@ -202,9 +224,12 @@ package game.model.service
 										//trace("EAT STRANGERS",size)
 										SharedConst.SUPPLIES += size;
 										sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState": "eated"  } );
+										SoundPlayer.getInstance().playSound(new SwordSound());
+										SoundPlayer.getInstance().playSound(new BiteSound());
 									}
 								} else {
 									(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(point);
+									SoundPlayer.getInstance().playSound(new SwordSound());
 									//trace("KILL_GROUP",size)
 								}
 								
@@ -214,12 +239,14 @@ package game.model.service
 						}
 						break;
 					case "giant":
-						trace("GIANT CHECK");
+						//trace("GIANT CHECK");
 						
 						if ((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupSize() >= 12 || SharedConst.CURRENT_STATE == "torch")
 						{
 							points = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getGroupPoints();
-							(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(points[Math.round(Math.random()*(points.length-1))]);
+							(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).killGroup(points[Math.round(Math.random() * (points.length - 1))]);
+							
+							SoundPlayer.getInstance().playSound(new BiteSound());
 						}
 						break;
 					default:

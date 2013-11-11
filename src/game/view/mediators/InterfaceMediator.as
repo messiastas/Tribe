@@ -87,6 +87,8 @@ package game.view.mediators
 		
 		private function onRestartGame(e:Event):void 
 		{
+			GameFacade.getInstance().removeProxy(SharedConst.MAP_SERVICE);
+			GameFacade.getInstance().removeProxy(SharedConst.GAME_SERVICE);
 			sendNotification(SharedConst.CMD_RESTART_GAME);
 		}
 		

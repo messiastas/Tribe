@@ -194,6 +194,7 @@ package game.model.service
 			{
 				points[0] = GameFacade.getInstance().mainStage.mouseX;
 				var i:int = 0;
+				SharedConst.ON_POSITIONS = 0;
 				while (i < humans.length)
 				{
 					getHuman(humans[i]).setCurrentPoint(new Point(points[0] - int(currentDispersion / 2) + Math.random() * currentDispersion, SharedConst.TRIBE_VERTICAL_POSITION + Math.random() * currentDispersion));
@@ -228,14 +229,28 @@ package game.model.service
 			//GameFacade.getInstance().iteration = iteration;
 			//sendNotification(SharedConst.NEW_ITER, { "iteration":iteration } );
 			var i:int = 0;
-			if (isPlayerMove)
+			if (isPlayerMove && SharedConst.ON_POSITIONS<SharedConst.TRIBE_SIZE)
 			{
 				while (i < humans.length)
 				{
 						getHuman(humans[i]).makeStep();
 						i++
+							
+				}
+				if (SharedConst.ON_POSITIONS < SharedConst.TRIBE_SIZE && iteration % 2 == 0)
+				{
+					var typeStep:Number = Math.random();
+					if (typeStep > .5)
+					{
+						SoundPlayer.getInstance().playSound(new StepSound());
+					} else 
+					{
+						SoundPlayer.getInstance().playSound(new StepSound2());
+					}
+					
 				}
 			}
+			
 			scrollerAction();
 			i = 0;
 			while (i < animals.length)
@@ -496,6 +511,8 @@ package game.model.service
 			humansGroup = new Array;
 			createPoints(0, SharedConst.STAGE_WIDTH, num);
 			
+			SharedConst.ON_POSITIONS = 0;
+			
 			//trace("currentGroups:", num, "numPoints:",points.length);
 			while (i < humans.length)
 			{
@@ -637,8 +654,8 @@ package game.model.service
 			} else 
 			{
 				sendNotification(SharedConst.GAME_OVER);
-				GameFacade.getInstance().removeProxy(SharedConst.MAP_SERVICE);
-				GameFacade.getInstance().removeProxy(SharedConst.GAME_SERVICE);
+				/*GameFacade.getInstance().removeProxy(SharedConst.MAP_SERVICE);
+				GameFacade.getInstance().removeProxy(SharedConst.GAME_SERVICE);*/
 			}
 			
 			//trace(animals.length);

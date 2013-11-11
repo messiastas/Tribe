@@ -485,7 +485,8 @@ package game.view.components
 		
 		private function addToStory(s:String):void 
 		{
-			story.storyText.text += "\n \n";
+			if(story.storyText.text!="")
+				story.storyText.text += "\n \n";
 			story.storyText.text += s;
 		}
 		

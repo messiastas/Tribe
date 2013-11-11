@@ -57,6 +57,9 @@ package game.view.components
 			body.bBorn.buttonMode = true;
 			body.bSacrifice.buttonMode = true;
 			
+			body.bSound.buttonMode = true;
+			body.bSound.addEventListener(MouseEvent.CLICK, onSoundClick);
+			
 			body.levelTime.gotoAndStop(1);
 			
 			GameFacade.getInstance().mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
@@ -95,10 +98,18 @@ package game.view.components
 					if (body.bSacrifice.visible)
 						onSacrificeClick(null);
 					break;
+				case 48:
+					onSoundClick(null);
+					break;
 				case 27:
 					fscommand("quit");
 					break;
 			}
+		}
+		
+		private function onSoundClick(e:MouseEvent):void 
+		{
+			SharedConst.isSound = !SharedConst.isSound;
 		}
 		
 		private function onWeaponClick(e:MouseEvent):void 
@@ -306,6 +317,7 @@ package game.view.components
 			gameOverClip.gotoAndPlay(1);
 			gameOverClip.addEventListener(MouseEvent.CLICK, onGameOverClick);
 			gameOverClip.mouseChildren = false;
+			body.levelTime.gotoAndStop(1);
 		}
 		
 		private function onGameOverClick(e:MouseEvent):void 

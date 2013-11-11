@@ -12,6 +12,7 @@ package game.view.components
 	import game.common.GameFacade
 	import game.common.interfaces.*;
 	import game.common.SharedConst;
+	import game.common.SoundPlayer;
 	
 	/**
 	 * ...
@@ -60,6 +61,17 @@ package game.view.components
 					{
 						body = new Crocodyle();
 					}
+					var soundType:Number = Math.random();
+					if (soundType > .66)
+					{
+						SoundPlayer.getInstance().playSound(new GrowlSound1());
+					} else if (soundType > .33)
+					{
+						SoundPlayer.getInstance().playSound(new GrowlSound2());
+					} else 
+					{
+						SoundPlayer.getInstance().playSound(new GrowlSound3());
+					}
 					
 					break;
 				case "strangers":
@@ -91,6 +103,7 @@ package game.view.components
 				case "giant":
 					body = new Pterodactyl();
 					(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().addChild(human);
+					SoundPlayer.getInstance().playSound(new PteroSound());
 					break;
 				default:
 					body = new Antelope();
