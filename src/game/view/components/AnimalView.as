@@ -34,7 +34,7 @@ package game.view.components
 		
 		public function init():void {
 			
-			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().addChild(human);
+			(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().addChildAt(human,0);
 			//var body:Rectangle = new Rectangle(0, 0, 20, 20);
 			switch (humanName)
 			{
@@ -42,8 +42,10 @@ package game.view.components
 					if (SharedConst.LAND_TYPE == 4)
 					{
 						body = new Camel();
-					} else 
+					} else if (SharedConst.LAND_TYPE == 2)
 					{
+						body = new Goat();
+					} else 	{
 						body = new Antelope();
 					}
 					break;
@@ -78,6 +80,9 @@ package game.view.components
 					if (SharedConst.LAND_TYPE == 4)
 					{
 						body = new Bananas();
+					} else if (SharedConst.LAND_TYPE == 2)
+					{
+						body = new BerrySnow();
 					} else 
 					{
 						body = new Berry();
@@ -85,15 +90,10 @@ package game.view.components
 					break;
 				case "giant":
 					body = new Pterodactyl();
+					(GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getCreaturesClip().addChild(human);
 					break;
 				default:
-					if (SharedConst.LAND_TYPE == 4)
-					{
-						body = new Camel();
-					} else 
-					{
-						body = new Antelope();
-					}
+					body = new Antelope();
 					
 					break;
 			}

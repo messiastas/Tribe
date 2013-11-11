@@ -66,6 +66,8 @@ package game.view.components
 			changePeople();
 			
 			body.nightMask.mouseEnabled = false;
+			body.mcDanger.visible = false;
+			body.mcDanger.mouseEnabled = false;
 			checkNight();
 		}
 		
@@ -187,6 +189,14 @@ package game.view.components
 			checkShamanLevel();
 			if (SharedConst.CURRENT_STATE == "torch")
 				checkFire(true);
+			if (SharedConst.TRIBE_SIZE > 5)
+			{
+				body.mcDanger.visible = false;
+				
+			} else 
+			{
+				body.mcDanger.visible = true;
+			}
 		}
 		
 		public function changeSupplies():void 
@@ -271,7 +281,7 @@ package game.view.components
 					body.nightMask.gotoAndStop(1);
 				} else 
 				{
-					var frame:int = 1 + int(SharedConst.TRIBE_SIZE / 10);
+					var frame:int = 2 + int(SharedConst.TRIBE_SIZE / 10);
 					if (frame > 5)
 						frame = 5;
 					body.nightMask.gotoAndStop(frame);
@@ -295,11 +305,16 @@ package game.view.components
 			GameFacade.getInstance().InterfaceClip.addChild(gameOverClip);
 			gameOverClip.gotoAndPlay(1);
 			gameOverClip.addEventListener(MouseEvent.CLICK, onGameOverClick);
+			gameOverClip.mouseChildren = false;
 		}
 		
 		private function onGameOverClick(e:MouseEvent):void 
 		{
-			fscommand("quit");
+			//fscommand("quit");
+			dispatchEvent(new Event("restartGame"));
+			GameFacade.getInstance().InterfaceClip.removeChild((e.target as MovieClip));
+			
+			GameFacade.getInstance().mainStage.frameRate = 60;
 		}
 		
 		

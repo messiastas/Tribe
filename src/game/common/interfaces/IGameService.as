@@ -21,6 +21,7 @@ package game.common.interfaces
 		function bornPeople():void;
 		function sacrificePeople():void;
 		function finishLevel():void;
+		//function restartLevel():void;
 		function removeAnimal(aName:String):void;
 	}
 	

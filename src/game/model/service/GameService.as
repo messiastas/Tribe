@@ -80,19 +80,11 @@ package game.model.service
 			
 			createHumans();
 			createGroups(currentGroups);
-			//createInterface();
 			startLevel();
-			//startIntro();
-			
-			
-			
-			//setStartTargets();
-			//setPlayer();
-			//startLevel();
 			
 		}
 		
-		private function startIntro():void 
+		/*private function startIntro():void 
 		{
 			introClip = new IntroClip;
 			GameFacade.getInstance().mainStage.addChild(introClip);
@@ -111,7 +103,7 @@ package game.model.service
 			createGroups(currentGroups);
 			createInterface();
 			startLevel();
-		}
+		}*/
 		
 		private function createHumans():void 
 		{
@@ -154,7 +146,7 @@ package game.model.service
 			currentLevelType = SharedConst.LEVELTYPE_SCROLLER;
 				
 			currentLevelArray = SharedConst.LEVELS_ARRAY[SharedConst.CURRENT_LEVEL - 1];
-			
+			//Utils.recursiveTrace(currentLevelArray,"");
 			while (currentLevelArray.length <SharedConst.MAP_DISTANCE/(SharedConst.LANDS_COEF_ARRAY[SharedConst.LAND_TYPE - 1].mindistance+20))
 			{
 				
@@ -198,6 +190,15 @@ package game.model.service
 				
 				createGroups(currentGroups);
 				
+			} else if(SharedConst.TRIBE_SIZE<=5)
+			{
+				points[0] = GameFacade.getInstance().mainStage.mouseX;
+				var i:int = 0;
+				while (i < humans.length)
+				{
+					getHuman(humans[i]).setCurrentPoint(new Point(points[0] - int(currentDispersion / 2) + Math.random() * currentDispersion, SharedConst.TRIBE_VERTICAL_POSITION + Math.random() * currentDispersion));
+					i++
+				}
 			}
 				
 		}
@@ -417,6 +418,11 @@ package game.model.service
 					
 				}
 				sendNotification(SharedConst.CHANGE_PEOPLE );
+				if (SharedConst.TRIBE_SIZE < 6)
+				{
+					currentGroups = 1;
+					createGroups(currentGroups);
+				}
 				//createGroups(currentGroups);
 			} else 
 			{
@@ -601,6 +607,27 @@ package game.model.service
 			sendNotification(SharedConst.REMOVE_LISTENERS);
 			Utils.changeDaytime();
 			
+			for each(var aName:String in animals)
+			{
+				removeAnimal(aName);
+			}
+			animals = [];
+			
+			for each(var hName:String in humans)
+			{
+				GameFacade.getInstance().removeProxy(hName);
+			}
+			humans = []
+			
+			for each (var obst:Object in currentLevelArray)
+			{
+				obst = null;
+				
+			}
+			currentLevelArray = [];
+			SharedConst.LEVELS_ARRAY[SharedConst.CURRENT_LEVEL - 1] = [];
+			
+			
 			if (SharedConst.TRIBE_SIZE > 1)
 			{
 				GameFacade.getInstance().removeProxy(SharedConst.MAP_SERVICE);
@@ -610,6 +637,8 @@ package game.model.service
 			} else 
 			{
 				sendNotification(SharedConst.GAME_OVER);
+				GameFacade.getInstance().removeProxy(SharedConst.MAP_SERVICE);
+				GameFacade.getInstance().removeProxy(SharedConst.GAME_SERVICE);
 			}
 			
 			//trace(animals.length);

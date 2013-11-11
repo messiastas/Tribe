@@ -44,8 +44,17 @@ package game.view.components
 			body = new LevelMap();
 			movie.addChild(body);
 			//trace("here");
-			body.bg.gotoAndStop(1);
 			
+			randomViewToAll();
+			
+			
+			
+			
+		}
+		
+		public function randomViewToAll():void 
+		{
+			body.bg.gotoAndStop(1);
 			randomView(body.level0,true);
 			//body.level0.addEventListener(MouseEvent.CLICK, onStartGame);
 			
@@ -62,8 +71,7 @@ package game.view.components
 			randomView(body.level32, false);
 			
 			randomView(body.level40, false);
-			randomView(body.level41,false);
-			
+			randomView(body.level41, false);
 			
 			body.bWait.alpha = .5;
 			body.bWait.addEventListener(MouseEvent.CLICK, onWait);
@@ -94,6 +102,7 @@ package game.view.components
 			Utils.changeDaytime();
 			checkBG();
 			makeInactive(body.bWait);
+			dispatchEvent(new Event("wait"));
 		}
 		
 		private function checkBG():void 
@@ -127,13 +136,19 @@ package game.view.components
 			dispatchEvent(new Event("startGame"))
 		}
 		
+		public function onlyViewMenu():void 
+		{
+			GameFacade.getInstance().OtherClip.addChild(movie);
+			checkBG();
+		}
+		
 		public function viewMenu():void 
 		{
 			GameFacade.getInstance().OtherClip.addChild(movie);
 			checkBG();
 			//makeActive(body.bWait);
 			SharedConst.SPEND_DISTANCE = 0;
-			if (SharedConst.SUPPLIES > 10)
+			if (SharedConst.SUPPLIES > 10 && SharedConst.LEVELS_IN_GAME.length<2)
 			{
 				makeActive(body.bWait);
 			} else 
@@ -142,6 +157,9 @@ package game.view.components
 			}
 			switch(SharedConst.LAST_LEVEL)
 			{
+				case "":
+					
+					break;
 				case "0":
 					makeActive(body.level10);
 					makeActive(body.level11);
@@ -274,7 +292,7 @@ package game.view.components
 			
 			story.storyText.text = "";
 			
-			if (SharedConst.TRIBE_SIZE > 15)
+			if (SharedConst.TRIBE_SIZE > 25)
 			{
 				addToStory(SharedConst.GAME_RESULTS.size[0]);
 				if (SharedConst.SUPPLIES > SharedConst.TRIBE_SIZE)
@@ -371,7 +389,7 @@ package game.view.components
 		
 		private function endStory(situation:int, hunting:String):void 
 		{
-			var cannToDip:Boolean = (SharedConst.SUCCEED_CANNIBALISM>1.5*SharedConst.SUCCEED_DIPLOMACY)
+			var cannToDip:Boolean = (SharedConst.SUCCEED_CANNIBALISM>3*SharedConst.SUCCEED_DIPLOMACY)
 			switch (String(String(situation)+hunting))
 			{
 				case "1a":

@@ -39,10 +39,11 @@ package game.common
 		{
 			introClip = new IntroClip;
 			GameFacade.getInstance().mainStage.addChild(introClip);
+			GameFacade.getInstance().mainStage.frameRate = 24;
 			GameFacade.getInstance().mainStage.focus = GameFacade.getInstance().mainStage;
 			GameFacade.getInstance().mainStage.addEventListener(MouseEvent.CLICK, onIntroSkip);
 			GameFacade.getInstance().mainStage.addEventListener(MouseEvent.RIGHT_CLICK, nullRightClick);
-			GameFacade.getInstance().mainStage.frameRate = 24;
+			
 		}
 		
 		private function onIntroSkip(e:MouseEvent):void 

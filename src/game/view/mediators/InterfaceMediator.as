@@ -42,6 +42,7 @@ package game.view.mediators
 			panel.addEventListener("onSacrificeClick", onSacrificeClick);
 			
 			panel.addEventListener("finishLevel", onFinishLevel);
+			panel.addEventListener("restartGame", onRestartGame);
 			
 			panel.clickAreaInvisible();
 		}
@@ -82,6 +83,11 @@ package game.view.mediators
 		private function onFinishLevel(e:Event):void 
 		{
 			sendNotification(SharedConst.CMD_FINISH_LEVEL);
+		}
+		
+		private function onRestartGame(e:Event):void 
+		{
+			sendNotification(SharedConst.CMD_RESTART_GAME);
 		}
 		
 		override public function listNotificationInterests() : Array 
