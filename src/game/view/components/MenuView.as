@@ -307,7 +307,7 @@ package game.view.components
 			} else 
 			{
 				addToStory(SharedConst.GAME_RESULTS.size[1]);
-				if (SharedConst.SUPPLIES > SharedConst.TRIBE_SIZE)
+				if (SharedConst.SUPPLIES > 25)
 				{
 					addToStory(SharedConst.GAME_RESULTS.food[2]);
 					storyShamanLevel(0);

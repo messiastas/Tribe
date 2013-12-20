@@ -43,7 +43,7 @@ package game.common
 			GameFacade.getInstance().mainStage.focus = GameFacade.getInstance().mainStage;
 			GameFacade.getInstance().mainStage.addEventListener(MouseEvent.CLICK, onIntroSkip);
 			GameFacade.getInstance().mainStage.addEventListener(MouseEvent.RIGHT_CLICK, nullRightClick);
-			
+			SoundPlayer.getInstance().playMusic(musicMenu);
 		}
 		
 		private function onIntroSkip(e:MouseEvent):void 

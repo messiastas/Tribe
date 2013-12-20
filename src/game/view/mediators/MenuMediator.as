@@ -9,6 +9,7 @@ package game.view.mediators
 	import game.common.GameFacade;
 	import game.common.SharedConst;
 	import org.puremvc.as3.interfaces.INotification;
+	import game.common.SoundPlayer;
 	
 	/**
 	 * ...
@@ -62,6 +63,7 @@ package game.view.mediators
 					GameFacade.getInstance().removeMediator(mediatorName);
 					break;
 				case SharedConst.VIEW_MENU:
+					SoundPlayer.getInstance().playMusic(musicMenu);
 					panel.viewMenu();
 					break;
 				case SharedConst.CMD_RESTART_GAME:

@@ -154,7 +154,7 @@ package game.model.service
 				
 				
 			}
-			
+			SoundPlayer.getInstance().playMusic(Music1);
 			actionTimer.start();
 			
 			//GameFacade.getInstance().mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPush);
@@ -237,7 +237,7 @@ package game.model.service
 						i++
 							
 				}
-				if (SharedConst.ON_POSITIONS < SharedConst.TRIBE_SIZE && iteration % 2 == 0)
+				if (SharedConst.ON_POSITIONS < SharedConst.TRIBE_SIZE && iteration % 3 == 0)
 				{
 					var typeStep:Number = Math.random();
 					if (typeStep > .5)
@@ -618,6 +618,7 @@ package game.model.service
 		
 		public function finishLevel():void
 		{
+			SoundPlayer.getInstance().stopMusic();
 			actionTimer.stop();
 			//GameFacade.getInstance().mainStage.removeEventListener(MouseEvent.RIGHT_CLICK, nullRightClick);
 			actionTimer.removeEventListener(TimerEvent.TIMER, onActionTimer);

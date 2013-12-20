@@ -72,6 +72,7 @@ package game.model.service
 									sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"AntelopeGoright"})
 									currentAngle = 90;
 								}
+								SoundPlayer.getInstance().playSound(new Horse());
 							}
 							break;
 						case "crocodyle":
@@ -135,6 +136,7 @@ package game.model.service
 									sendNotification(SharedConst.ACTION_CHANGE_STATE+humanName,{newState:"AntelopeGoright"})
 									currentAngle = 90;
 								}
+								//SoundPlayer.getInstance().playSound(new Horse());
 						}
 						break;
 					case "crocodyle":

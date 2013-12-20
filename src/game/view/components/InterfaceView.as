@@ -15,6 +15,7 @@ package game.view.components
 	import game.common.GameFacade
 	import game.common.interfaces.*;
 	import game.common.SharedConst;
+	import game.common.SoundPlayer;
 	import flash.system.*;
 	
 	/**
@@ -110,6 +111,14 @@ package game.view.components
 		private function onSoundClick(e:MouseEvent):void 
 		{
 			SharedConst.isSound = !SharedConst.isSound;
+			if (SharedConst.isSound)
+			{
+				SoundPlayer.getInstance().playMusic(null);
+			} else 
+			{
+				SoundPlayer.getInstance().stopMusic();
+			}
+			
 		}
 		
 		private function onWeaponClick(e:MouseEvent):void 
@@ -133,13 +142,13 @@ package game.view.components
 		private function onBornClick(e:MouseEvent):void 
 		{
 			dispatchEvent(new Event("onBornClick"))
-			checkFire(false);
+			//checkFire(false);
 		}
 		
 		private function onSacrificeClick(e:MouseEvent):void 
 		{
 			dispatchEvent(new Event("onSacrificeClick"))
-			checkFire(false);
+			//checkFire(false);
 		}
 		
 		private function onLeftClick(e:MouseEvent):void 
